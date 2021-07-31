@@ -14,16 +14,18 @@ public class Recipe {
     private String name;
     private List<Product> productList;
     private String description;
+    private String foodType;
 
     public Recipe(){
 
     }
 
-    public Recipe(String id, String name, List<Product> productList, String description) {
+    public Recipe(String id, String name, List<Product> productList, String description, String foodType) {
         this.id = id;
         this.name = name;
         this.productList = productList;
         this.description = description;
+        this.foodType = foodType;
     }
 
     public String getId() {
@@ -58,4 +60,13 @@ public class Recipe {
     public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
+
+    public String getFoodType() {
+        return foodType;
+    }
+
+    public void setFoodType(String foodType) {
+        this.foodType = foodType;
+    }
+
 }
