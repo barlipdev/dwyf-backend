@@ -90,4 +90,22 @@ public class RecipeService {
         return null;
     }
 
+    public List<Integer> getRecipesCountByTypes(){
+        String[] typesOfRecipes = {"Sniadanie","Obiad","Deser","Kolacja","Inne"};
+        List<Integer> result = new ArrayList<>();
+        List<Recipe> recipeList = recipeRepository.findAll();
+
+        for (int i=0; i< typesOfRecipes.length; i++){
+            int index = i;
+            AtomicInteger recipesCount = new AtomicInteger();
+            recipeList.forEach(recipe -> {
+                if (recipe.getFoodType().equals(typesOfRecipes[index])){
+                    recipesCount.getAndIncrement();
+                }
+            });
+            result.add(recipesCount.intValue());
+        }
+        return result;
+    }
+
 }

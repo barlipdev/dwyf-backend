@@ -29,6 +29,11 @@ public class RecipeController {
         return recipeService.findAll();
     }
 
+    @GetMapping("/recipeChart")
+    public List<Integer> getRecipesCountByTypes(){
+        return recipeService.getRecipesCountByTypes();
+    }
+
     @GetMapping("/recipe/best/{userId}")
     public Recipe getPrefferedRecipe(@PathVariable String userId){
         return recipeService.getPrefferedRecipe(userId);
