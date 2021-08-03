@@ -3,6 +3,7 @@ package com.barlipdev.dwyf.service;
 import com.barlipdev.dwyf.exceptions.ResourceNotFoundException;
 import com.barlipdev.dwyf.model.Recipe;
 import com.barlipdev.dwyf.model.product.Product;
+import com.barlipdev.dwyf.model.product.ProductType;
 import com.barlipdev.dwyf.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,23 @@ public class RecipeService {
     private UserService userService;
 
     public Recipe add(Recipe recipe){
+        List<Product> recipeProducts = new ArrayList<>();
+        recipeProducts = recipe.getProductList();
+
+        recipeProducts.forEach(product -> {
+            if (product.getCount() < 0.050){
+                if (product.getProductType() == ProductType.L){
+                    if (product.getCount() <= 0.015){
+                        double count = product.getCount() / 0.005;
+                        product.setName(product.getName()+" "+(int)count+" łyżeczki/łyżeczka");
+                    }else{
+                        double count = product.getCount() / 0.015;
+                        product.setName(product.getName()+" "+(int)count+" łyżki/łyżka/łyżek");
+                    }
+                }
+            }
+        });
+
         return recipeRepository.insert(recipe);
     }
 
