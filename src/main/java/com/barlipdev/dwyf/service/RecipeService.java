@@ -29,13 +29,13 @@ public class RecipeService {
 
         recipeProducts.forEach(product -> {
             if (product.getCount() < 0.050){
-                if (product.getProductType() == ProductType.L){
+                if (product.getProductType() == ProductType.L && product.getProductType() == ProductType.KG){
                     if (product.getCount() <= 0.015){
                         double count = product.getCount() / 0.005;
-                        product.setName(product.getName()+" "+(int)count+" łyżeczki/łyżeczka");
+                        product.setName(product.getName()+" łyżeczka x"+(int)count);
                     }else{
                         double count = product.getCount() / 0.015;
-                        product.setName(product.getName()+" "+(int)count+" łyżki/łyżka/łyżek");
+                        product.setName(product.getName()+" łyżka x"+(int)count);
                     }
                 }
             }
