@@ -32,10 +32,10 @@ public class RecipeService {
                 if (product.getProductType() == ProductType.L || product.getProductType() == ProductType.KG){
                     if (product.getCount() <= 0.015){
                         double count = product.getCount() / 0.005;
-                        product.setName(product.getName()+" łyżeczka x"+(int)count);
+                        product.setName(product.getName()+" "+(int)count+"x łyżeczka");
                     }else{
                         double count = product.getCount() / 0.015;
-                        product.setName(product.getName()+" łyżka x"+(int)count);
+                        product.setName(product.getName()+" "+(int)count+"x łyżka");
                     }
                 }
             }
