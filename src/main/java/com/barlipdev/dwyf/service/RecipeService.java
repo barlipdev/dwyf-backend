@@ -29,7 +29,7 @@ public class RecipeService {
 
         recipeProducts.forEach(product -> {
             if (product.getCount() < 0.050){
-                if (product.getProductType() == ProductType.L && product.getProductType() == ProductType.KG){
+                if (product.getProductType() == ProductType.L || product.getProductType() == ProductType.KG){
                     if (product.getCount() <= 0.015){
                         double count = product.getCount() / 0.005;
                         product.setName(product.getName()+" łyżeczka x"+(int)count);
