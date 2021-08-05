@@ -30,7 +30,7 @@ public class RecipeService {
 
         recipeProducts.forEach(product -> {
 
-            product.setSplittedProductTags(splitProductTag(product.getProductTags()));
+            product.setSplittedProductTags(splitProductTag(product.getProductTag()));
 
             if (product.getProductType() == ProductType.SZT){
                 if (product.getCount() >= 1.0){

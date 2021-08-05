@@ -12,8 +12,7 @@ public class Product implements Comparable<Product>{
     private Double count;
     private ProductType productType;
     private List<String> splittedProductTags;
-
-    private String productTags;
+    private String productTag;
 
     public Product(){
 
@@ -26,7 +25,7 @@ public class Product implements Comparable<Product>{
         this.price = price;
         this.count = count;
         this.productType = productType;
-        this.productTags = productTag;
+        this.productTag = productTag;
     }
 
     public String getId() {
@@ -85,12 +84,12 @@ public class Product implements Comparable<Product>{
         this.splittedProductTags = splittedProductTags;
     }
 
-    public String getProductTags() {
-        return productTags;
+    public String getProductTag() {
+        return productTag;
     }
 
-    public void setProductTags(String productTags) {
-        this.productTags = productTags;
+    public void setProductTag(String productTag) {
+        this.productTag = productTag;
     }
 
     @Override
