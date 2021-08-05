@@ -29,6 +29,9 @@ public class RecipeService {
         recipeProducts = recipe.getProductList();
 
         recipeProducts.forEach(product -> {
+
+            product.setSplittedProductTags(splitProductTag(product.getProductTags()));
+
             if (product.getProductType() == ProductType.SZT){
                 if (product.getCount() >= 1.0){
                     double count = product.getCount();
@@ -109,7 +112,7 @@ public class RecipeService {
 
             recipeProducts.forEach(recipeProduct ->{
                 expiredProducts.forEach(expiredProduct -> {
-                    if (recipeProduct.getProductTag().contains(expiredProduct.getProductTag())){
+                    if (recipeProduct.getSplittedProductTags().contains(expiredProduct.getSplittedProductTags())){
                         if (Period.between(expiredProduct.getExpirationDate(),today).getDays() > 0){
                             correctProductsCount.set(correctProductsCount.intValue() + Period.between(expiredProduct.getExpirationDate(),today).getDays());
                         }
@@ -152,6 +155,15 @@ public class RecipeService {
             result.add(recipesCount.intValue());
         }
         return result;
+    }
+
+    private List<String> splitProductTag(String productTag){
+        List<String> splittedTags = new ArrayList<>();
+        String[] temp = productTag.split(",");
+        for (String tag : temp){
+            splittedTags.add(tag);
+        }
+        return splittedTags;
     }
 
 }

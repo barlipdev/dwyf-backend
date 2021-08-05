@@ -2,6 +2,7 @@ package com.barlipdev.dwyf.model.product;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Product implements Comparable<Product>{
     private String id;
@@ -10,7 +11,9 @@ public class Product implements Comparable<Product>{
     private Double price;
     private Double count;
     private ProductType productType;
-    private String productTag;
+    private List<String> splittedProductTags;
+
+    private String productTags;
 
     public Product(){
 
@@ -23,7 +26,7 @@ public class Product implements Comparable<Product>{
         this.price = price;
         this.count = count;
         this.productType = productType;
-        this.productTag = productTag;
+        this.productTags = productTag;
     }
 
     public String getId() {
@@ -74,12 +77,20 @@ public class Product implements Comparable<Product>{
         this.productType = productType;
     }
 
-    public String getProductTag() {
-        return productTag;
+    public List<String> getSplittedProductTags() {
+        return splittedProductTags;
     }
 
-    public void setProductTag(String productTag) {
-        this.productTag = productTag;
+    public void setSplittedProductTags(List<String> splittedProductTags) {
+        this.splittedProductTags = splittedProductTags;
+    }
+
+    public String getProductTags() {
+        return productTags;
+    }
+
+    public void setProductTags(String productTags) {
+        this.productTags = productTags;
     }
 
     @Override
