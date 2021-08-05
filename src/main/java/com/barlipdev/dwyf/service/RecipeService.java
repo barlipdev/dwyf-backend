@@ -29,34 +29,7 @@ public class RecipeService {
         recipeProducts = recipe.getProductList();
 
         recipeProducts.forEach(product -> {
-            if (product.getCount() < 0.100){
-                if (product.getProductType() == ProductType.L || product.getProductType() == ProductType.KG){
-                    if (product.getCount() < 0.015){
-                        double count = product.getCount() / 0.005;
-                        product.setName(product.getName()+" "+(int)count+"x łyżeczka");
-                    }else{
-                        double count = product.getCount() / 0.015;
-                        product.setName(product.getName()+" "+(int)count+"x łyżka");
-                    }
-                }
-            }else if (product.getCount() >= 0.1 && product.getCount() < 1.0){
-                if (product.getProductType() == ProductType.KG){
-                    double count = product.getCount() * 1000;
-                    product.setName(product.getName()+" "+(int)count+" g");
-                }
-                if (product.getProductType() == ProductType.L){
-                    double count = product.getCount() * 1000;
-                    product.setName(product.getName()+" "+(int)count+" L");
-                }
-            }else if(product.getCount() >= 1.0){
-                DecimalFormat decimalFormat = new DecimalFormat("#.#");
-                if (product.getProductType() == ProductType.KG){
-                    product.setName(product.getName()+" "+decimalFormat.format(product.getCount())+" kg");
-                }
-                if (product.getProductType() == ProductType.L){
-                    product.setName(product.getName()+" "+decimalFormat.format(product.getCount())+" L");
-                }
-            }else if (product.getProductType() == ProductType.SZT){
+            if (product.getProductType() == ProductType.SZT){
                 if (product.getCount() >= 1.0){
                     double count = product.getCount();
                     product.setName(product.getName()+" "+(int)count+" szt");
@@ -67,9 +40,35 @@ public class RecipeService {
                 }else if(product.getCount() == 0.75){
                     product.setName(product.getName()+ " 3/4 szt");
                 }
+            }else {
+                if (product.getCount() < 0.100){
+                    if (product.getCount() < 0.015){
+                        double count = product.getCount() / 0.005;
+                        product.setName(product.getName()+" "+(int)count+"x łyżeczka");
+                    }else {
+                        double count = product.getCount() / 0.015;
+                        product.setName(product.getName() + " " + (int) count + "x łyżka");
+                    }
+                }else if (product.getCount() >= 0.1 && product.getCount() < 1.0){
+                    if (product.getProductType() == ProductType.KG){
+                        double count = product.getCount() * 1000;
+                        product.setName(product.getName()+" "+(int)count+" g");
+                    }
+                    if (product.getProductType() == ProductType.L){
+                        double count = product.getCount() * 1000;
+                        product.setName(product.getName()+" "+(int)count+" L");
+                    }
+                }else if(product.getCount() >= 1.0){
+                    DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                    if (product.getProductType() == ProductType.KG){
+                        product.setName(product.getName()+" "+decimalFormat.format(product.getCount())+" kg");
+                    }
+                    if (product.getProductType() == ProductType.L){
+                        product.setName(product.getName()+" "+decimalFormat.format(product.getCount())+" L");
+                    }
+                }
             }
         });
-
         return recipeRepository.insert(recipe);
     }
 
