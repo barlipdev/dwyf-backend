@@ -8,6 +8,7 @@ import com.barlipdev.dwyf.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -24,11 +25,11 @@ public class RecipeService {
     private UserService userService;
 
     public Recipe add(Recipe recipe){
-        List<Product> recipeProducts = new ArrayList<>();
+        List<Product> recipeProducts;
         recipeProducts = recipe.getProductList();
 
         recipeProducts.forEach(product -> {
-            if (product.getCount() < 0.050){
+            if (product.getCount() < 0.100){
                 if (product.getProductType() == ProductType.L || product.getProductType() == ProductType.KG){
                     if (product.getCount() <= 0.015){
                         double count = product.getCount() / 0.005;
@@ -37,6 +38,34 @@ public class RecipeService {
                         double count = product.getCount() / 0.015;
                         product.setName(product.getName()+" "+(int)count+"x łyżka");
                     }
+                }
+            }else if (product.getCount() >= 0.1 && product.getCount() < 1.0){
+                if (product.getProductType() == ProductType.KG){
+                    double count = product.getCount() * 1000;
+                    product.setName(product.getName()+" "+(int)count+" g");
+                }
+                if (product.getProductType() == ProductType.L){
+                    double count = product.getCount() * 1000;
+                    product.setName(product.getName()+" "+(int)count+" L");
+                }
+            }else if(product.getCount() >= 1.0){
+                DecimalFormat decimalFormat = new DecimalFormat("#.#");
+                if (product.getProductType() == ProductType.KG){
+                    product.setName(product.getName()+" "+decimalFormat.format(product.getCount())+" kg");
+                }
+                if (product.getProductType() == ProductType.L){
+                    product.setName(product.getName()+" "+decimalFormat.format(product.getCount())+" L");
+                }
+            }else if (product.getProductType() == ProductType.SZT){
+                if (product.getCount() >= 1.0){
+                    double count = product.getCount();
+                    product.setName(product.getName()+" "+(int)count+" szt");
+                }else if(product.getCount() == 0.25){
+                    product.setName(product.getName()+ " 1/4 szt");
+                }else if(product.getCount() == 0.5){
+                    product.setName(product.getName()+ " 1/2 szt");
+                }else if(product.getCount() == 0.75){
+                    product.setName(product.getName()+ " 3/4 szt");
                 }
             }
         });
