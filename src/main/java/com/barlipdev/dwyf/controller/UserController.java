@@ -2,6 +2,7 @@ package com.barlipdev.dwyf.controller;
 
 import com.barlipdev.dwyf.model.User;
 import com.barlipdev.dwyf.model.product.Product;
+import com.barlipdev.dwyf.model.product.ResponseOpenFood;
 import com.barlipdev.dwyf.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,11 @@ public class UserController {
     @GetMapping("/users")
     public List<User> getUsers(){
         return userService.getUsers();
+    }
+
+    @PostMapping("/users/product/barcode/{userId}")
+    public Product addProductByBarCode(@PathVariable String userId, @RequestBody Product product){
+        return userService.addProductWithBarCode(userId,product);
     }
 
 }
