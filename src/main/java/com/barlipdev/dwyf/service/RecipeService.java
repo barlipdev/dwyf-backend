@@ -59,7 +59,7 @@ public class RecipeService {
                     }
                     if (product.getProductType() == ProductType.L){
                         double count = product.getCount() * 1000;
-                        product.setName(product.getName()+" "+(int)count+" L");
+                        product.setName(product.getName()+" "+(int)count+" ml");
                     }
                 }else if(product.getCount() >= 1.0){
                     DecimalFormat decimalFormat = new DecimalFormat("#.#");
