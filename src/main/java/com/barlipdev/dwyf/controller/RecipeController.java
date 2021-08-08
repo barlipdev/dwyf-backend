@@ -29,7 +29,7 @@ public class RecipeController {
         return recipeService.findAll();
     }
 
-    @GetMapping("/recipeChart")
+    @GetMapping("/recipe/chart")
     public List<Integer> getRecipesCountByTypes(){
         return recipeService.getRecipesCountByTypes();
     }
