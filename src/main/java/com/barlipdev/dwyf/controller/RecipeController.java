@@ -14,7 +14,7 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
-    @PostMapping("/recipe")
+    @PostMapping("/recipe/add")
     public Recipe add(@RequestBody Recipe recipe){
         return recipeService.add(recipe);
     }
@@ -24,7 +24,7 @@ public class RecipeController {
         return recipeService.findById(id);
     }
 
-    @GetMapping("/recipe")
+    @GetMapping("/recipe/all")
     public List<Recipe> findAll(){
         return recipeService.findAll();
     }
