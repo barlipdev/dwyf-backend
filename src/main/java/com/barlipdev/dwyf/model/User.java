@@ -12,6 +12,7 @@ public class User {
 
     @Id
     private String id;
+    private String auth_token;
     private String username;
     private String email;
     private String password;
@@ -66,5 +67,13 @@ public class User {
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
+    }
+
+    public String getAuth_token() {
+        return auth_token;
+    }
+
+    public void setAuth_token(String auth_token) {
+        this.auth_token = auth_token;
     }
 }

@@ -27,12 +27,13 @@ public class AuthService {
         return userRepository.insert(user);
     }
 
-    public String login(User user){
+    public User login(User user){
 
         User findedUser = (User) userRepository.findByEmail(user.getEmail()).orElseThrow();
+        String auth_token = "";
 
         if (findedUser != null && findedUser.getPassword().equals(user.getPassword())){
-            return Jwts.builder()
+            auth_token = Jwts.builder()
                     .setSubject(user.getEmail())
                     .claim("email",user.getEmail())
                     .claim("password",user.getPassword())
@@ -41,9 +42,10 @@ public class AuthService {
                     .setExpiration(new Date(System.currentTimeMillis()+ 86400000))
                     .signWith(SignatureAlgorithm.HS512,"asffddfs$%&*".getBytes())
                     .compact() + "UID"+findedUser.getId();
-        }else{
-            return "Wrong username or password!";
         }
+
+        findedUser.setAuth_token(auth_token);
+        return findedUser;
     }
 
 }
