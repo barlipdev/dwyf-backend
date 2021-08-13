@@ -23,10 +23,7 @@ public class AuthController {
 
     @PostMapping("/v2/login/{email}&{password}")
     public User loginV2(@PathVariable String email, @PathVariable String password){
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
-        return authService.login(user);
+        return authService.loginV2(email,password);
     }
 
     @PostMapping("/register")

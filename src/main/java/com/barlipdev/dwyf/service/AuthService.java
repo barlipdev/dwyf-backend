@@ -48,4 +48,25 @@ public class AuthService {
         return findedUser;
     }
 
+    public User loginV2(String email, String password){
+
+        User findedUser = (User) userRepository.findByEmail(email).orElseThrow();
+        String auth_token = "";
+
+        if (findedUser != null && findedUser.getPassword().equals(password)){
+            auth_token = Jwts.builder()
+                    .setSubject(email)
+                    .claim("email",email)
+                    .claim("password",password)
+                    .claim("id",findedUser.getId())
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis()+ 86400000))
+                    .signWith(SignatureAlgorithm.HS512,"asffddfs$%&*".getBytes())
+                    .compact() + "UID"+findedUser.getId();
+        }
+
+        findedUser.setAuth_token(auth_token);
+        return findedUser;
+    }
+
 }
