@@ -22,7 +22,7 @@ public class AuthController {
         return authService.login(loginData);
     }
 
-    @PostMapping("/v2/login/{email}&{password}")
+    @PostMapping("/login/v2/{email}&{password}")
     public User loginV2(@PathVariable String email, @PathVariable String password){
         return authService.login(new LoginData(email,password));
     }
