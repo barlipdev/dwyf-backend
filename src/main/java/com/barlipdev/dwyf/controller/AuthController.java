@@ -1,5 +1,6 @@
 package com.barlipdev.dwyf.controller;
 
+import com.barlipdev.dwyf.model.LoginData;
 import com.barlipdev.dwyf.model.User;
 import com.barlipdev.dwyf.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,13 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/login")
-    public User login(@RequestBody User user){
-        return authService.login(user);
+    public User login(@RequestBody LoginData loginData){
+        return authService.login(loginData);
     }
 
     @PostMapping("/v2/login/{email}&{password}")
     public User loginV2(@PathVariable String email, @PathVariable String password){
-        return authService.loginV2(email,password);
+        return authService.login(new LoginData(email,password));
     }
 
     @PostMapping("/register")

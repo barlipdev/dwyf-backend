@@ -1,5 +1,6 @@
 package com.barlipdev.dwyf.service;
 
+import com.barlipdev.dwyf.model.LoginData;
 import com.barlipdev.dwyf.model.User;
 import com.barlipdev.dwyf.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -27,37 +28,16 @@ public class AuthService {
         return userRepository.insert(user);
     }
 
-    public User login(User user){
+    public User login(LoginData loginData){
 
-        User findedUser = (User) userRepository.findByEmail(user.getEmail()).orElseThrow();
+        User findedUser = (User) userRepository.findByEmail(loginData.getEmail()).orElseThrow();
         String auth_token = "";
 
-        if (findedUser != null && findedUser.getPassword().equals(user.getPassword())){
+        if (findedUser != null && findedUser.getPassword().equals(loginData.getPassword())){
             auth_token = Jwts.builder()
-                    .setSubject(user.getEmail())
-                    .claim("email",user.getEmail())
-                    .claim("password",user.getPassword())
-                    .claim("id",findedUser.getId())
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis()+ 86400000))
-                    .signWith(SignatureAlgorithm.HS512,"asffddfs$%&*".getBytes())
-                    .compact() + "UID"+findedUser.getId();
-        }
-
-        findedUser.setAuth_token(auth_token);
-        return findedUser;
-    }
-
-    public User loginV2(String email, String password){
-
-        User findedUser = (User) userRepository.findByEmail(email).orElseThrow();
-        String auth_token = "";
-
-        if (findedUser != null && findedUser.getPassword().equals(password)){
-            auth_token = Jwts.builder()
-                    .setSubject(email)
-                    .claim("email",email)
-                    .claim("password",password)
+                    .setSubject(loginData.getEmail())
+                    .claim("email",loginData.getEmail())
+                    .claim("password",loginData.getPassword())
                     .claim("id",findedUser.getId())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis()+ 86400000))
