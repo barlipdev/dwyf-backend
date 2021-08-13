@@ -24,7 +24,8 @@ public class AuthService {
     @Autowired
     UserRepository userRepository;
 
-    public User register(User user) throws IOException {
+    public User register(String username, String email, String password) throws IOException {
+        User user = new User(username,email,password);
         return userRepository.insert(user);
     }
 

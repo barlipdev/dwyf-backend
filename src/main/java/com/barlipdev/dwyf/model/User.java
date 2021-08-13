@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "Users")
@@ -20,6 +21,13 @@ public class User {
 
     public User(){
 
+    }
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.setProductList(new ArrayList<>());
     }
 
     public User(String username, String email, String password, List<Product> productList) {

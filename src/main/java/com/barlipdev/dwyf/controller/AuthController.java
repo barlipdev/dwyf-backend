@@ -29,8 +29,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) throws IOException {
-        return authService.register(user);
+    public User register(@PathParam("username") String username,@PathParam("email") String email, @PathParam("password") String password) throws IOException {
+        return authService.register(username, email, password);
     }
 
 }
