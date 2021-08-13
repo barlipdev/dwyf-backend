@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web){
-        web.ignoring().antMatchers("/register","/login");
+        web.ignoring().antMatchers("/register","/login","/login/v2");
     }
 //    @Bean
 //    public WebMvcConfigurer corsConfigurer() {
