@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/recipe","/users/product/barcode").authenticated()
+        http.authorizeRequests().anyRequest().authenticated()
                 .and().addFilter(new JwtFilter(authenticationManager())).csrf().disable();
     }
 
