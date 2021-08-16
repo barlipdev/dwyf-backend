@@ -53,7 +53,7 @@ public class UserService {
     public List<Product> addProduct(String id, Product product){
         User user = userRepository.findById(id).orElseThrow();
         if (user != null) {
-            if (user.getProductList() != null){
+            if (user.getProductList() == null){
                 user.setProductList(new ArrayList<>());
             }
             user.getProductList().add(product);
