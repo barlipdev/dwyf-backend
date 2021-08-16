@@ -21,16 +21,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web){
         web.ignoring().antMatchers("/register","/login","/login/**");
     }
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**").allowedMethods("*");
-//                registry.addMapping("/users").allowedMethods("*");
-//                registry.addMapping("/users/status").allowedMethods("*");
-//                registry.addMapping("/users/recent").allowedMethods("*");
-//            }
-//        };
-//    }
 }
