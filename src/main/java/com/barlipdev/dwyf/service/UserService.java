@@ -84,7 +84,7 @@ public class UserService {
         final String uri = "https://world.openfoodfacts.org/api/v0/product/"+product.getId();
 
         ResponseOpenFood response = connection.getForObject(uri, ResponseOpenFood.class);
-        addProduct(userId,mapper.mapOpenFoodProductToProduct(response.getProduct(), product));
+        //addProduct(userId,mapper.mapOpenFoodProductToProduct(response.getProduct(), product));
         return mapper.mapOpenFoodProductToProduct(response.getProduct(), product);
 
     }
