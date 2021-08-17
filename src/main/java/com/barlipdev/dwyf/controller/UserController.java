@@ -22,8 +22,8 @@ public class UserController {
     }
 
     @PostMapping("/users/product")
-    public List<Product> addProduct(@PathParam("userId") String id, @RequestBody Product product){
-        return userService.addProduct(id,product);
+    public List<Product> addProduct(@PathParam("userId") String userId, @RequestBody Product product){
+        return userService.addProduct(userId,product);
     }
 
     @DeleteMapping("/users")
