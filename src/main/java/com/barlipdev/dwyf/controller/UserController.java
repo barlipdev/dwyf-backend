@@ -31,8 +31,8 @@ public class UserController {
         userService.delete(user);
     }
 
-    @GetMapping("/users/product/{id}")
-    public List<Product> getUserProducts(@PathVariable String id){
+    @GetMapping("/users/product")
+    public List<Product> getUserProducts(@PathParam("userId") String id){
         return userService.getUserProducts(id);
     }
 
