@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/users/product")
-    public List<Product> addProduct(@PathParam("userId") String userId, @RequestBody Product product){
+    public Product addProduct(@PathParam("userId") String userId, @RequestBody Product product){
         return userService.addProduct(userId,product);
     }
 

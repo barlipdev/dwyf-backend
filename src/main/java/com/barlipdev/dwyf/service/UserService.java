@@ -50,7 +50,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow().getProductList();
     }
 
-    public List<Product> addProduct(String id, Product product){
+    public Product addProduct(String id, Product product){
         User user = userRepository.findById(id).orElseThrow();
         if (user != null) {
             if (user.getProductList() == null){
@@ -58,7 +58,7 @@ public class UserService {
             }
             user.getProductList().add(product);
             userRepository.save(user);
-            return user.getProductList();
+            return product;
         }else{
             return null;
         }
