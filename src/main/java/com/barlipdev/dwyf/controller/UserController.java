@@ -32,8 +32,9 @@ public class UserController {
     }
 
     @GetMapping("/users/product")
-    public List<Product> getUserProducts(@PathParam("userId") String id){
-        return userService.getUserProducts(id);
+    public List<Product> getUserProducts(@PathParam("userId") String userId){
+        System.out.println(userId);
+        return userService.getUserProducts(userId);
     }
 
     @GetMapping("/users/{id}")
