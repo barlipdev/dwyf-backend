@@ -98,6 +98,7 @@ public class RecipeService {
     public Recipe getPrefferedRecipe(String userId){
         List<Recipe> recipeList = recipeRepository.findAll();
         List<Product> expiredProducts = userService.getExpiredProducts(userId);
+        List<Product> goodProducts = new ArrayList<Product>();
         HashMap<Recipe,Integer> prefferedRecipes = new HashMap<>();
         LocalDate today = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
@@ -114,9 +115,9 @@ public class RecipeService {
                 expiredProducts.forEach(expiredProduct -> {
                     expiredProduct.getSplittedProductTags().forEach(productTag -> {
                         if (recipeProduct.getSplittedProductTags().contains(productTag)){
-                            System.out.println(Period.between(today,expiredProduct.getExpirationDate()).getDays());
                             if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
                                 correctProductsCount.set(correctProductsCount.intValue() + Period.between(today,expiredProduct.getExpirationDate()).getDays());
+                                goodProducts.add(recipeProduct);
                             }
                         }
                     });
@@ -124,7 +125,9 @@ public class RecipeService {
             });
             if (correctProductsCount.get() > 0){
                 prefferedRecipes.put(recipe,correctProductsCount.get());
-                System.out.println("Recipe points: " + recipe.getName() +" "+ correctProductsCount.intValue() );
+                System.out.println("Recipe points: " + recipe.getName() +" Points: "+ correctProductsCount.intValue() );
+                System.out.println(goodProducts);
+                goodProducts.clear();
                 correctProductsCount.set(0);
             }
         });
