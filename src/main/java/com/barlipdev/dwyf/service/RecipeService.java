@@ -126,7 +126,9 @@ public class RecipeService {
             if (correctProductsCount.get() > 0){
                 prefferedRecipes.put(recipe,correctProductsCount.get());
                 System.out.println("Recipe points: " + recipe.getName() +" Points: "+ correctProductsCount.intValue() );
-                System.out.println(goodProducts);
+                goodProducts.forEach(goodProduct -> {
+                    System.out.println(goodProduct.getName());
+                });
                 goodProducts.clear();
                 correctProductsCount.set(0);
             }
