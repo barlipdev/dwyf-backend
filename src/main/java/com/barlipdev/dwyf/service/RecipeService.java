@@ -14,6 +14,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class RecipeService {
@@ -112,18 +113,20 @@ public class RecipeService {
             correctProductsCount.set(0);
 
             recipeProducts.forEach(recipeProduct ->{
+                HashMap<Product,Integer> prefferedProduct = new HashMap<>();
                 expiredProducts.forEach(expiredProduct -> {
-                    expiredProduct.getSplittedProductTags().forEach(productTag -> {
-                        if (recipeProduct.getSplittedProductTags().contains(productTag)){
+                        int productPoints = checkTags(recipeProduct,expiredProduct);
+                        if (productPoints > 0){
                             if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
                                 correctProductsCount.set(correctProductsCount.intValue() + Period.between(today,expiredProduct.getExpirationDate()).getDays());
-                                if (!goodProducts.contains(expiredProduct)){
-                                    goodProducts.add(expiredProduct);
-                                }
+                                prefferedProduct.put(expiredProduct,productPoints);
                             }
                         }
-                    });
                 });
+                Product finalProduct = getProductFromMap(prefferedProduct);
+                if(!goodProducts.contains(finalProduct)){
+                    goodProducts.add(getProductFromMap(prefferedProduct));
+                }
             });
             if (correctProductsCount.get() > 0){
                 prefferedRecipes.put(recipe,correctProductsCount.get());
@@ -142,6 +145,17 @@ public class RecipeService {
         int max = Collections.max(recipesMap.values());
 
         for(Map.Entry<Recipe, Integer> entry : recipesMap.entrySet()) {
+            if (entry.getValue() == max){
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    private Product getProductFromMap(HashMap<Product,Integer> productMap){
+        int max = Collections.max(productMap.values());
+
+        for(Map.Entry<Product, Integer> entry : productMap.entrySet()) {
             if (entry.getValue() == max){
                 return entry.getKey();
             }
@@ -174,6 +188,26 @@ public class RecipeService {
             splittedTags.add(tag);
         }
         return splittedTags;
+    }
+
+    private Integer checkTags(Product recipeProduct, Product product){
+        List<String> recipeProductTags = recipeProduct.getSplittedProductTags();
+        List<String> productTags = product.getSplittedProductTags();
+        AtomicReference<Integer> response = new AtomicReference<Integer>(0);
+
+        recipeProductTags.forEach(recipeProductTag -> {
+            productTags.forEach(productTag -> {
+                if (recipeProductTag.contains(productTag)){
+                    String tmp = recipeProductTag.replaceAll("\\s+","");
+                    if (productTag.length() == tmp.length()){
+                        response.set(response.get() +1);
+                    }
+                }
+            });
+        });
+
+        return response.get();
+
     }
 
 }
