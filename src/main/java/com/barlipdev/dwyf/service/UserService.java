@@ -4,6 +4,7 @@ import com.barlipdev.dwyf.mapper.Mapper;
 import com.barlipdev.dwyf.model.User;
 import com.barlipdev.dwyf.model.product.Product;
 import com.barlipdev.dwyf.model.product.ResponseOpenFood;
+import com.barlipdev.dwyf.model.product.UsefulnessState;
 import com.barlipdev.dwyf.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -71,7 +72,7 @@ public class UserService {
 
         //searching expired products
         user.getProductList().forEach( userProduct -> {
-            if (Period.between(today,userProduct.getExpirationDate()).getDays() <= 2){
+            if (userProduct.getUsefulnessState() == UsefulnessState.CLOSEEXPIRYDATE){
                 expiredProducts.add(userProduct);
             }
         });

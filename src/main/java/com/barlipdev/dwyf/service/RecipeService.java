@@ -112,11 +112,13 @@ public class RecipeService {
 
             recipeProducts.forEach(recipeProduct ->{
                 expiredProducts.forEach(expiredProduct -> {
-                    if (recipeProduct.getSplittedProductTags().contains(expiredProduct.getSplittedProductTags())){
-                        if (Period.between(expiredProduct.getExpirationDate(),today).getDays() > 0){
-                            correctProductsCount.set(correctProductsCount.intValue() + Period.between(expiredProduct.getExpirationDate(),today).getDays());
+                    recipeProduct.getSplittedProductTags().forEach(productTag -> {
+                        if (expiredProduct.getSplittedProductTags().contains(productTag)){
+                            if (Period.between(expiredProduct.getExpirationDate(),today).getDays() > 0){
+                                correctProductsCount.set(correctProductsCount.intValue() + Period.between(expiredProduct.getExpirationDate(),today).getDays());
+                            }
                         }
-                    }
+                    });
                 });
             });
             if (correctProductsCount.get() > 0){
