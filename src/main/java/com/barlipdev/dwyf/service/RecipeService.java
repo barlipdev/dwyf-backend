@@ -115,7 +115,7 @@ public class RecipeService {
                     expiredProduct.getSplittedProductTags().forEach(productTag -> {
                         if (recipeProduct.getSplittedProductTags().contains(productTag)){
                             System.out.println(Period.between(expiredProduct.getExpirationDate(),today).getDays());
-                            if (Period.between(expiredProduct.getExpirationDate(),today).getDays() > 0){
+                            if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
                                 correctProductsCount.set(correctProductsCount.intValue() + Period.between(expiredProduct.getExpirationDate(),today).getDays());
                             }
                         }
