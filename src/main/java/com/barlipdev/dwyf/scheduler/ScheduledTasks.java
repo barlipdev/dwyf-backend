@@ -33,7 +33,7 @@ public class ScheduledTasks {
                         int daysToExpired = Period.between(today,product.getExpirationDate()).getDays();
                         if ( daysToExpired > 5){
                             product.setUsefulnessState(UsefulnessState.GOOD);
-                        }else if (daysToExpired > 0 && daysToExpired <= 5){
+                        }else if (daysToExpired > 0){
                             product.setUsefulnessState(UsefulnessState.CLOSEEXPIRYDATE);
                         }else {
                             product.setUsefulnessState(UsefulnessState.EXPIRED);

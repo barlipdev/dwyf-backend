@@ -83,9 +83,6 @@ public class Product implements Comparable<Product>{
         this.productTag = productTag;
     }
 
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
-    }
 
     public UsefulnessState getUsefulnessState() {
         return usefulnessState;
