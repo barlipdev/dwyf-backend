@@ -34,9 +34,7 @@ public class Product implements Comparable<Product>{
     public void setId(String id) {
         this.id = id;
     }
-
-
-
+    
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
