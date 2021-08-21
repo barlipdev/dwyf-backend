@@ -116,7 +116,7 @@ public class RecipeService {
                         if (recipeProduct.getSplittedProductTags().contains(productTag)){
                             System.out.println(Period.between(today,expiredProduct.getExpirationDate()).getDays());
                             if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
-                                correctProductsCount.set(correctProductsCount.intValue() + Period.between(expiredProduct.getExpirationDate(),today).getDays());
+                                correctProductsCount.set(correctProductsCount.intValue() + Period.between(today,expiredProduct.getExpirationDate()).getDays());
                             }
                         }
                     });
