@@ -118,7 +118,7 @@ public class RecipeService {
                         int productPoints = checkTags(recipeProduct,expiredProduct);
                         if (productPoints > 0){
                             if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
-                                correctProductsCount.set(correctProductsCount.intValue() + Period.between(today,expiredProduct.getExpirationDate()).getDays());
+                                //correctProductsCount.set(correctProductsCount.intValue() + Period.between(today,expiredProduct.getExpirationDate()).getDays());
                                 prefferedProduct.put(expiredProduct,productPoints);
                             }
                         }
@@ -126,6 +126,7 @@ public class RecipeService {
                 if (prefferedProduct.size() > 0){
                     Product finalProduct = getProductFromMap(prefferedProduct);
                     if(!goodProducts.contains(finalProduct)){
+                        correctProductsCount.set(correctProductsCount.intValue() + 1);
                         goodProducts.add(getProductFromMap(prefferedProduct));
                     }
                 }
