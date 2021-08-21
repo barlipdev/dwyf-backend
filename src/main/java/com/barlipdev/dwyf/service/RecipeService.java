@@ -123,9 +123,11 @@ public class RecipeService {
                             }
                         }
                 });
-                Product finalProduct = getProductFromMap(prefferedProduct);
-                if(!goodProducts.contains(finalProduct)){
-                    goodProducts.add(getProductFromMap(prefferedProduct));
+                if (prefferedProduct.size() > 0){
+                    Product finalProduct = getProductFromMap(prefferedProduct);
+                    if(!goodProducts.contains(finalProduct)){
+                        goodProducts.add(getProductFromMap(prefferedProduct));
+                    }
                 }
             });
             if (correctProductsCount.get() > 0){
