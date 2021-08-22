@@ -17,15 +17,23 @@ public class Mapper {
         Double count = Double.parseDouble(splittedCount[0]);
         String type = splittedCount[1];
 
-        if (count < 1.0 ){
-            product.setCount(count * 0.001);
-        }else {
-            product.setCount(count);
-        }
+
         if (type.equals("l") || type.equals("ml")){
-            product.setProductType(ProductType.L);
+            if (type.equals("l")){
+                product.setCount(count);
+                product.setProductType(ProductType.L);
+            }else {
+                product.setCount(count);
+                product.setProductType(ProductType.ml);
+            }
         }else if (type.equals("kg") || type.equals("g")){
-            product.setProductType(ProductType.KG);
+            if (type.equals("kg")){
+                product.setCount(count);
+                product.setProductType(ProductType.KG);
+            }else {
+                product.setCount(count);
+                product.setProductType(ProductType.g);
+            }
         }
 
         return product;

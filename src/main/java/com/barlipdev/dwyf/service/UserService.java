@@ -80,12 +80,11 @@ public class UserService {
         return expiredProducts;
     }
 
-    public Product addProductWithBarCode(String userId, Product product){
+    public Product scanProductWithBarCode(String userId, Product product){
         RestTemplate connection = new RestTemplate();
         final String uri = "https://world.openfoodfacts.org/api/v0/product/"+product.getId();
 
         ResponseOpenFood response = connection.getForObject(uri, ResponseOpenFood.class);
-        //addProduct(userId,mapper.mapOpenFoodProductToProduct(response.getProduct(), product));
         return mapper.mapOpenFoodProductToProduct(response.getProduct(), product);
 
     }

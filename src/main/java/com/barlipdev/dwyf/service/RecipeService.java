@@ -118,7 +118,6 @@ public class RecipeService {
                         int productPoints = checkTags(recipeProduct,expiredProduct);
                         if (productPoints > 0){
                             if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
-                                //correctProductsCount.set(correctProductsCount.intValue() + Period.between(today,expiredProduct.getExpirationDate()).getDays());
                                 prefferedProduct.put(expiredProduct,productPoints);
                             }
                         }
