@@ -34,6 +34,9 @@ public class Mapper {
                 product.setCount(count);
                 product.setProductType(ProductType.g);
             }
+        }else if (type.contains("szt")){
+            product.setCount(count);
+            product.setProductType(ProductType.SZT);
         }
 
         return product;
