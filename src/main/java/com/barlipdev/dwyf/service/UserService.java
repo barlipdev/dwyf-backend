@@ -3,35 +3,38 @@ package com.barlipdev.dwyf.service;
 import com.barlipdev.dwyf.mapper.Mapper;
 import com.barlipdev.dwyf.model.User;
 import com.barlipdev.dwyf.model.product.Product;
-import com.barlipdev.dwyf.model.product.ResponseOpenFood;
+import com.barlipdev.dwyf.model.product.ProductOpenFood;
 import com.barlipdev.dwyf.model.product.UsefulnessState;
+import com.barlipdev.dwyf.repository.OpenFoodProductRepository;
 import com.barlipdev.dwyf.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService{
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private OpenFoodProductRepository openFoodProductRepository;
+
+    @Autowired
     Mapper mapper;
+
 
     public User findById(String id){
         return userRepository.findById(id).orElseThrow();
     }
 
     public User add(User user){
+        user.setAvatarUrl("http://51.68.139.166/img/default.png");
+        user.setCreatedIn(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         return userRepository.insert(user);
     }
 
@@ -80,13 +83,11 @@ public class UserService {
         return expiredProducts;
     }
 
-    public Product scanProductWithBarCode(String userId, Product product){
-        RestTemplate connection = new RestTemplate();
-        final String uri = "https://world.openfoodfacts.org/api/v0/product/"+product.getId();
-
-        ResponseOpenFood response = connection.getForObject(uri, ResponseOpenFood.class);
-        return mapper.mapOpenFoodProductToProduct(response.getProduct(), product);
+    public Product scanProductWithBarCode(Product product){
+        ProductOpenFood productOpenFood = openFoodProductRepository.findById(product.getId()).orElseThrow();
+        return mapper.mapOpenFoodProductToProduct(productOpenFood, product);
 
     }
+
 
 }

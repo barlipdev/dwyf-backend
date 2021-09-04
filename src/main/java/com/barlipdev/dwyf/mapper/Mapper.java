@@ -10,7 +10,12 @@ public class Mapper {
 
     public Product mapOpenFoodProductToProduct(ProductOpenFood productOpenFood, Product product){
         product.setId(productOpenFood.get_id());
-        product.setName(productOpenFood.getProduct_name()+" "+productOpenFood.getBrands()+" "+productOpenFood.getQuantity());
+        if (productOpenFood.getProduct_name_pl() != null ){
+            product.setName(productOpenFood.getProduct_name_pl()+" "+productOpenFood.getBrands()+" "+productOpenFood.getQuantity());
+        }else{
+            product.setName(productOpenFood.getProduct_name()+" "+productOpenFood.getBrands()+" "+productOpenFood.getQuantity());
+        }
+
         product.setSplittedProductTags(productOpenFood.get_keywords());
 
         String[] splittedCount = productOpenFood.getQuantity().split(" ");

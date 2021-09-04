@@ -1,21 +1,18 @@
 package com.barlipdev.dwyf.service;
 
 import com.barlipdev.dwyf.model.LoginData;
+import com.barlipdev.dwyf.model.LoginResponse;
 import com.barlipdev.dwyf.model.User;
 import com.barlipdev.dwyf.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -24,30 +21,31 @@ public class AuthService {
     @Autowired
     UserRepository userRepository;
 
-    public User register(String username, String email, String password) throws IOException {
-        User user = new User(username,email,password);
-        return userRepository.insert(user);
+    public User register(@RequestBody User newUser) throws IOException {
+        newUser.setAvatarUrl("http://51.68.139.166/img/default.png");
+        newUser.setProductList(new ArrayList<>());
+        newUser.setCreatedIn(LocalDate.now());
+        return userRepository.insert(newUser);
     }
 
-    public User login(LoginData loginData){
+    public LoginResponse login(LoginData loginData){
 
-        User findedUser = (User) userRepository.findByEmail(loginData.getEmail()).orElseThrow();
-        String auth_token = "";
+        User findedUser = (User) userRepository.findByEmail(loginData.getEmail()).get();
+        String authToken = "";
 
         if (findedUser != null && findedUser.getPassword().equals(loginData.getPassword())){
-            auth_token = Jwts.builder()
+            authToken = Jwts.builder()
                     .setSubject(loginData.getEmail())
                     .claim("email",loginData.getEmail())
                     .claim("password",loginData.getPassword())
-                    .claim("id",findedUser.getId())
+                    .claim("userRole",findedUser.getUserRole())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis()+ 86400000))
-                    .signWith(SignatureAlgorithm.HS512,"asffddfs$%&*".getBytes())
-                    .compact() + "UID"+findedUser.getId();
+                    .signWith(SignatureAlgorithm.HS512,"7aPc$VED<-Qr8)E".getBytes())
+                    .compact();
         }
 
-        findedUser.setAuth_token(auth_token);
-        return findedUser;
+        return new LoginResponse(authToken,findedUser);
     }
 
 }

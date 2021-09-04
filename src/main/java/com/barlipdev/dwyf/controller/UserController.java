@@ -47,8 +47,8 @@ public class UserController {
     }
 
     @PostMapping("/users/product/barcode")
-    public Product addProductByBarCode(@PathParam("userId") String userId, @RequestBody Product product){
-        return userService.scanProductWithBarCode(userId,product);
+    public Product addProductByBarCode(@RequestBody Product product){
+        return userService.scanProductWithBarCode(product);
     }
 
 }

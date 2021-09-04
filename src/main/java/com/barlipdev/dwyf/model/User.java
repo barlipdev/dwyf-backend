@@ -2,9 +2,9 @@ package com.barlipdev.dwyf.model;
 
 import com.barlipdev.dwyf.model.product.Product;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +13,12 @@ public class User {
 
     @Id
     private String id;
-    private String auth_token;
+    private String avatarUrl;
     private String username;
     private String email;
     private String password;
+    private LocalDate createdIn;
+    private UserRole userRole;
     private List<Product> productList;
 
     public User(){
@@ -77,11 +79,27 @@ public class User {
         this.productList = productList;
     }
 
-    public String getAuth_token() {
-        return auth_token;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAuth_token(String auth_token) {
-        this.auth_token = auth_token;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public LocalDate getCreatedIn() {
+        return createdIn;
+    }
+
+    public void setCreatedIn(LocalDate createdIn) {
+        this.createdIn = createdIn;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 }
