@@ -2,6 +2,7 @@ package com.barlipdev.dwyf.model.product;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
@@ -9,12 +10,13 @@ import java.util.List;
 public class ProductOpenFood {
 
     @Id
-    private String _id;
-    private List<String> _keywords;
+    @Field("_id")
+    private String id;
+    @Field("_keywords")
+    private List<String> tags;
     private String quantity;
-    private String product_name;
-    private String product_name_fr;
-    private String product_name_pl;
+    @Field("product_name")
+    private String productName;
     private String brands;
 
     public ProductOpenFood(){
@@ -22,29 +24,27 @@ public class ProductOpenFood {
     }
 
     public ProductOpenFood(String _id, List<String> _keywords, String quantity, String product_name, String product_name_fr, String product_name_pl, String brands) {
-        this._id = _id;
-        this._keywords = _keywords;
+        this.id = _id;
+        this.tags = _keywords;
         this.quantity = quantity;
-        this.product_name = product_name;
-        this.product_name_fr = product_name_fr;
-        this.product_name_pl = product_name_pl;
+        this.productName = product_name;
         this.brands = brands;
     }
 
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public List<String> get_keywords() {
-        return _keywords;
+    public List<String> getTags() {
+        return tags;
     }
 
-    public void set_keywords(List<String> _keywords) {
-        this._keywords = _keywords;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public String getQuantity() {
@@ -55,12 +55,12 @@ public class ProductOpenFood {
         this.quantity = quantity;
     }
 
-    public String getProduct_name() {
-        return product_name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProduct_name(String product_name) {
-        this.product_name = product_name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getBrands() {
@@ -71,19 +71,4 @@ public class ProductOpenFood {
         this.brands = brands;
     }
 
-    public String getProduct_name_fr() {
-        return product_name_fr;
-    }
-
-    public void setProduct_name_fr(String product_name_fr) {
-        this.product_name_fr = product_name_fr;
-    }
-
-    public String getProduct_name_pl() {
-        return product_name_pl;
-    }
-
-    public void setProduct_name_pl(String product_name_pl) {
-        this.product_name_pl = product_name_pl;
-    }
 }

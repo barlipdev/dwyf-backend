@@ -16,13 +16,19 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/users")
-    public User add(@RequestBody User user){
+    public List<User> add(@RequestBody User user){
         return userService.add(user);
     }
 
     @PostMapping("/users/product")
     public Product addProduct(@PathParam("userId") String userId, @RequestBody Product product){
         return userService.addProduct(userId,product);
+
+    }
+
+    @PostMapping("/users/update")
+    public List<User> update(@RequestBody User user){
+        return userService.update(user);
     }
 
     @DeleteMapping("/users")
@@ -41,13 +47,21 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @GetMapping("/users/email")
+    public User findByEmail(@RequestParam String email){
+        return userService.findByEmail(email);
+    }
+
     @GetMapping("/users")
     public List<User> getUsers(){
         return userService.getUsers();
     }
 
     @PostMapping("/users/product/barcode")
-    public Product addProductByBarCode(@RequestBody Product product){
+    public Product addProductByBarCode(@RequestBody Product product,@RequestParam String date){
+        if(date != null){
+            product.setExpirationDate(date);
+        }
         return userService.scanProductWithBarCode(product);
     }
 

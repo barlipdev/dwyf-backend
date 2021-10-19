@@ -32,10 +32,11 @@ public class UserService{
         return userRepository.findById(id).orElseThrow();
     }
 
-    public User add(User user){
+    public List<User> add(User user){
         user.setAvatarUrl("http://51.68.139.166/img/default.png");
         user.setCreatedIn(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        return userRepository.insert(user);
+        userRepository.insert(user);
+        return userRepository.findAll();
     }
 
     public void delete(User user){
@@ -46,8 +47,9 @@ public class UserService{
         return userRepository.findAll();
     }
 
-    public void update(User user){
+    public List<User> update(User user){
         userRepository.save(user);
+        return userRepository.findAll();
     }
 
     public List<Product> getUserProducts(String id){
@@ -87,6 +89,10 @@ public class UserService{
         ProductOpenFood productOpenFood = openFoodProductRepository.findById(product.getId()).orElseThrow();
         return mapper.mapOpenFoodProductToProduct(productOpenFood, product);
 
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).orElseThrow();
     }
 
 

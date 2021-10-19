@@ -132,7 +132,7 @@ public class RecipeService {
             });
             if (correctProductsCount.get() > 0){
                 prefferedRecipes.put(recipe,correctProductsCount.get());
-                System.out.println("Recipe points: " + recipe.getName() +" Points: "+ correctProductsCount.intValue() );
+                System.out.println("Recipe points: " + recipe.getName() +" Points: "+ correctProductsCount.intValue() + "-----------V" );
                 goodProducts.forEach(goodProduct -> {
                     System.out.println(goodProduct.getName());
                 });

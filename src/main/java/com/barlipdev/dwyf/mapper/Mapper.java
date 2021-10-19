@@ -9,14 +9,11 @@ import org.springframework.stereotype.Service;
 public class Mapper {
 
     public Product mapOpenFoodProductToProduct(ProductOpenFood productOpenFood, Product product){
-        product.setId(productOpenFood.get_id());
-        if (productOpenFood.getProduct_name_pl() != null ){
-            product.setName(productOpenFood.getProduct_name_pl()+" "+productOpenFood.getBrands()+" "+productOpenFood.getQuantity());
-        }else{
-            product.setName(productOpenFood.getProduct_name()+" "+productOpenFood.getBrands()+" "+productOpenFood.getQuantity());
-        }
+        product.setId(productOpenFood.getId());
+        product.setName(productOpenFood.getProductName()+" "+productOpenFood.getBrands()+" "+productOpenFood.getQuantity());
 
-        product.setSplittedProductTags(productOpenFood.get_keywords());
+
+        product.setSplittedProductTags(productOpenFood.getTags());
 
         String[] splittedCount = productOpenFood.getQuantity().split(" ");
         Double count = Double.parseDouble(splittedCount[0]);

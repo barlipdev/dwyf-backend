@@ -1,6 +1,7 @@
 package com.barlipdev.dwyf.repository;
 
 import com.barlipdev.dwyf.model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
