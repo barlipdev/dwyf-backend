@@ -1,10 +1,12 @@
 package com.barlipdev.dwyf.controller;
 
+import com.barlipdev.dwyf.model.MatchedRecipe;
 import com.barlipdev.dwyf.model.Recipe;
 import com.barlipdev.dwyf.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 
@@ -34,8 +36,8 @@ public class RecipeController {
         return recipeService.getRecipesCountByTypes();
     }
 
-    @GetMapping("/recipe/best/{userId}")
-    public Recipe getPrefferedRecipe(@PathVariable String userId){
+    @GetMapping("/recipe/best")
+    public MatchedRecipe getPrefferedRecipe(@PathParam("userId") String userId){
         return recipeService.getPrefferedRecipe(userId);
     }
 

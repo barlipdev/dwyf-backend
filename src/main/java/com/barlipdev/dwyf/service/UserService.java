@@ -70,19 +70,25 @@ public class UserService{
         }
     }
 
-    public List<Product> getExpiredProducts(String id){
+    public List<Product> getGoodQualityUserProducts(String id){
         User user = userRepository.findById(id).orElseThrow();
-        List<Product> expiredProducts = new ArrayList<>();
+        List<Product> goodProducts = new ArrayList<>();
         LocalDate today = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         //searching expired products
         user.getProductList().forEach( userProduct -> {
             if (userProduct.getUsefulnessState() == UsefulnessState.CLOSEEXPIRYDATE){
-                expiredProducts.add(userProduct);
+                goodProducts.add(userProduct);
             }
         });
 
-        return expiredProducts;
+        user.getProductList().forEach(userProduct -> {
+            if (userProduct.getUsefulnessState() == UsefulnessState.GOOD){
+                goodProducts.add(userProduct);
+            }
+        });
+
+        return goodProducts;
     }
 
     public Product scanProductWithBarCode(Product product){

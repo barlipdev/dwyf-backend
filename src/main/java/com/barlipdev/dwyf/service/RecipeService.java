@@ -1,6 +1,7 @@
 package com.barlipdev.dwyf.service;
 
 import com.barlipdev.dwyf.exceptions.ResourceNotFoundException;
+import com.barlipdev.dwyf.model.MatchedRecipe;
 import com.barlipdev.dwyf.model.Recipe;
 import com.barlipdev.dwyf.model.product.Product;
 import com.barlipdev.dwyf.model.product.ProductType;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -96,32 +96,42 @@ public class RecipeService {
         return recipeRepository.findAll();
     }
 
-    public Recipe getPrefferedRecipe(String userId){
+    public MatchedRecipe getPrefferedRecipe(String userId){
         List<Recipe> recipeList = recipeRepository.findAll();
-        List<Product> expiredProducts = userService.getExpiredProducts(userId);
+        List<Product> goodQualityUserProducts = userService.getGoodQualityUserProducts(userId);
         List<Product> goodProducts = new ArrayList<Product>();
+        List<MatchedRecipe> matchedRecipeList = new ArrayList<>();
+        List<Product> availableProducts;
+        List<Product> notAvailableProducts;
+        List<Product> usedRecipeProducts;
         HashMap<Recipe,Integer> prefferedRecipes = new HashMap<>();
-        LocalDate today = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         //sorting products
-        Collections.sort(expiredProducts);
+        Collections.sort(goodQualityUserProducts);
 
-        //getting recipes where expiredProducts exists
-        recipeList.forEach(recipe -> {
+        //getting recipes where goodQualityUserProducts exists
+        for (Recipe recipe : recipeList){
             List<Product> recipeProducts = recipe.getProductList();
             AtomicInteger correctProductsCount = new AtomicInteger();
+            availableProducts = new ArrayList<>();
+            notAvailableProducts = new ArrayList<>();
+            usedRecipeProducts = new ArrayList<>();
             correctProductsCount.set(0);
 
-            recipeProducts.forEach(recipeProduct ->{
+            for (Product recipeProduct : recipeProducts){
                 HashMap<Product,Integer> prefferedProduct = new HashMap<>();
-                expiredProducts.forEach(expiredProduct -> {
-                        int productPoints = checkTags(recipeProduct,expiredProduct);
-                        if (productPoints > 0){
-                            if (Period.between(today,expiredProduct.getExpirationDate()).getDays() > 0){
-                                prefferedProduct.put(expiredProduct,productPoints);
+                for (Product goodQualityProduct : goodQualityUserProducts){
+                    int productPoints = checkTags(recipeProduct,goodQualityProduct);
+                    if (productPoints > 0){
+                        prefferedProduct.put(goodQualityProduct,productPoints);
+                        if (!availableProducts.contains(goodQualityProduct)){
+                            availableProducts.add(goodQualityProduct);
+                            if (!usedRecipeProducts.contains(recipeProduct)){
+                                usedRecipeProducts.add(recipeProduct);
                             }
                         }
-                });
+                    }
+                }
                 if (prefferedProduct.size() > 0){
                     Product finalProduct = getProductFromMap(prefferedProduct);
                     if(!goodProducts.contains(finalProduct)){
@@ -129,7 +139,15 @@ public class RecipeService {
                         goodProducts.add(getProductFromMap(prefferedProduct));
                     }
                 }
-            });
+            }
+
+            for (Product recipeProduct : recipeProducts){
+                if (!usedRecipeProducts.contains(recipeProduct)){
+                    notAvailableProducts.add(recipeProduct);
+                }
+            }
+
+
             if (correctProductsCount.get() > 0){
                 prefferedRecipes.put(recipe,correctProductsCount.get());
                 System.out.println("Recipe points: " + recipe.getName() +" Points: "+ correctProductsCount.intValue() + "-----------V" );
@@ -138,10 +156,21 @@ public class RecipeService {
                 });
                 goodProducts.clear();
                 correctProductsCount.set(0);
+                MatchedRecipe matchedRecipe = new MatchedRecipe(recipe,availableProducts,notAvailableProducts);
+                matchedRecipeList.add(matchedRecipe);
             }
-        });
-        return getRecipeFromMap(prefferedRecipes);
+        }
+        Recipe recipe = getRecipeFromMap(prefferedRecipes);
+       MatchedRecipe finalMatchedRecipe = new MatchedRecipe();
+        for(MatchedRecipe matchedRecipe : matchedRecipeList){
+            if (matchedRecipe.getRecipe().getId().equals(recipe.getId())){
+                finalMatchedRecipe = matchedRecipe;
+            }
+        }
+
+        return finalMatchedRecipe;
     }
+
 
     private Recipe getRecipeFromMap(HashMap<Recipe,Integer> recipesMap){
         int max = Collections.max(recipesMap.values());
@@ -153,6 +182,8 @@ public class RecipeService {
         }
         return null;
     }
+
+
 
     private Product getProductFromMap(HashMap<Product,Integer> productMap){
         int max = Collections.max(productMap.values());
