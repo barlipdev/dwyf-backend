@@ -1,8 +1,8 @@
 package com.barlipdev.dwyf.service;
 
-import com.barlipdev.dwyf.model.LoginData;
-import com.barlipdev.dwyf.model.LoginResponse;
-import com.barlipdev.dwyf.model.User;
+import com.barlipdev.dwyf.model.auth.LoginData;
+import com.barlipdev.dwyf.model.auth.LoginResponse;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

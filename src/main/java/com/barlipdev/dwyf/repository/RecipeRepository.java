@@ -1,6 +1,6 @@
 package com.barlipdev.dwyf.repository;
 
-import com.barlipdev.dwyf.model.Recipe;
+import com.barlipdev.dwyf.model.recipe.Recipe;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

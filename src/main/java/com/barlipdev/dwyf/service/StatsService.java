@@ -1,6 +1,6 @@
 package com.barlipdev.dwyf.service;
 
-import com.barlipdev.dwyf.model.User;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.stats.RadarChartRecipes;
 import com.barlipdev.dwyf.repository.RecipeRepository;
 import com.barlipdev.dwyf.repository.UserRepository;

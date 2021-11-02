@@ -1,4 +1,6 @@
-package com.barlipdev.dwyf.model;
+package com.barlipdev.dwyf.model.auth;
+
+import com.barlipdev.dwyf.model.user.User;
 
 public class LoginResponse {
 

@@ -1,4 +1,4 @@
-package com.barlipdev.dwyf.model;
+package com.barlipdev.dwyf.model.recipe;
 
 import com.barlipdev.dwyf.model.product.Product;
 import org.springframework.data.annotation.Id;
@@ -51,7 +51,6 @@ public class Recipe {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public List<Product> getProductList() {
         return productList;

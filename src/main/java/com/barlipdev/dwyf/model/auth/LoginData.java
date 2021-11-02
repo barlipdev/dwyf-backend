@@ -1,4 +1,4 @@
-package com.barlipdev.dwyf.model;
+package com.barlipdev.dwyf.model.auth;
 
 public class LoginData {
 

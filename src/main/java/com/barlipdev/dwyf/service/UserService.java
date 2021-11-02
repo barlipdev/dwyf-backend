@@ -1,7 +1,8 @@
 package com.barlipdev.dwyf.service;
 
 import com.barlipdev.dwyf.mapper.Mapper;
-import com.barlipdev.dwyf.model.User;
+import com.barlipdev.dwyf.model.user.ShoppingList;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.product.Product;
 import com.barlipdev.dwyf.model.product.ProductOpenFood;
 import com.barlipdev.dwyf.model.product.UsefulnessState;
@@ -99,6 +100,20 @@ public class UserService{
 
     public User findByEmail(String email){
         return userRepository.findByEmail(email).orElseThrow();
+    }
+
+    public User createNewShoppingList(String id,List<Product> productList){
+        User user = userRepository.findById(id).orElseThrow();
+        List<ShoppingList> userShoppingList = user.getShoppingLists();
+        userShoppingList.add(new ShoppingList(productList));
+        user.setShoppingLists(userShoppingList);
+
+        return userRepository.save(user);
+    }
+
+    public List<ShoppingList> getShoppingLists(String id){
+        User user = userRepository.findById(id).orElseThrow();
+        return  user.getShoppingLists();
     }
 
 

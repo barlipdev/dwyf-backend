@@ -1,8 +1,8 @@
-package com.barlipdev.dwyf.model;
+package com.barlipdev.dwyf.model.recipe;
 
+import com.barlipdev.dwyf.model.recipe.Recipe;
 import com.barlipdev.dwyf.model.product.Product;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class MatchedRecipe {

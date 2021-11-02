@@ -1,4 +1,4 @@
-package com.barlipdev.dwyf.model;
+package com.barlipdev.dwyf.model.user;
 
 import com.barlipdev.dwyf.model.product.Product;
 import org.springframework.data.annotation.Id;
@@ -20,6 +20,7 @@ public class User {
     private LocalDate createdIn;
     private UserRole userRole;
     private List<Product> productList;
+    private List<ShoppingList> shoppingLists;
 
     public User(){
 
@@ -30,6 +31,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.setProductList(new ArrayList<>());
+        this.setShoppingLists(new ArrayList<>());
     }
 
     public User(String username, String email, String password, List<Product> productList) {
@@ -37,6 +39,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.productList = productList;
+        this.setShoppingLists(new ArrayList<>());
     }
 
     public String getId() {
@@ -101,5 +104,13 @@ public class User {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public List<ShoppingList> getShoppingLists() {
+        return shoppingLists;
+    }
+
+    public void setShoppingLists(List<ShoppingList> shoppingLists) {
+        this.shoppingLists = shoppingLists;
     }
 }

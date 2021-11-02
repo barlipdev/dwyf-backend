@@ -1,4 +1,4 @@
-package com.barlipdev.dwyf.model;
+package com.barlipdev.dwyf.model.user;
 
 public enum UserRole {
     ADMIN,MODERATOR,USER

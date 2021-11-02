@@ -1,8 +1,9 @@
 package com.barlipdev.dwyf.service;
 
 import com.barlipdev.dwyf.exceptions.ResourceNotFoundException;
-import com.barlipdev.dwyf.model.MatchedRecipe;
-import com.barlipdev.dwyf.model.Recipe;
+import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
+import com.barlipdev.dwyf.model.recipe.Recipe;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.product.Product;
 import com.barlipdev.dwyf.model.product.ProductType;
 import com.barlipdev.dwyf.repository.RecipeRepository;
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,6 +23,9 @@ public class RecipeService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private HistoryPerformedRecipeService historyPerformedRecipeService;
 
     public Recipe add(Recipe recipe){
         List<Product> recipeProducts;
@@ -123,11 +125,15 @@ public class RecipeService {
                 for (Product goodQualityProduct : goodQualityUserProducts){
                     int productPoints = checkTags(recipeProduct,goodQualityProduct);
                     if (productPoints > 0){
-                        prefferedProduct.put(goodQualityProduct,productPoints);
-                        if (!availableProducts.contains(goodQualityProduct)){
-                            availableProducts.add(goodQualityProduct);
-                            if (!usedRecipeProducts.contains(recipeProduct)){
-                                usedRecipeProducts.add(recipeProduct);
+                        if (goodQualityProduct.getCount() > recipeProduct.getCount()){
+                            goodQualityProduct.setCount(recipeProduct.getCount());
+                            goodQualityProduct.setProductType(recipeProduct.getProductType());
+                            prefferedProduct.put(goodQualityProduct,productPoints);
+                            if (!availableProducts.contains(goodQualityProduct)){
+                                availableProducts.add(goodQualityProduct);
+                                if (!usedRecipeProducts.contains(recipeProduct)){
+                                    usedRecipeProducts.add(recipeProduct);
+                                }
                             }
                         }
                     }
@@ -241,6 +247,30 @@ public class RecipeService {
 
         return response.get();
 
+    }
+
+    private boolean performRecipe(String userId, MatchedRecipe matchedRecipe){
+
+        User user = userService.findById(userId);
+
+        if(user != null){
+            if (matchedRecipe.getNotAvailableProducts() == null || matchedRecipe.getNotAvailableProducts().size() == 0){
+                for (Product product : matchedRecipe.getAvailableProducts()){
+                    for(Product userProduct : user.getProductList()){
+                        if (product.getName().equals(userProduct.getName()) && product.getExpirationDate() == userProduct.getExpirationDate()){
+                            userProduct.setCount(userProduct.getCount() - product.getCount());
+                        }
+                    }
+                }
+                userService.update(user);
+                historyPerformedRecipeService.addPerformedRecipe(user,matchedRecipe.getRecipe());
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
 }

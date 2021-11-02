@@ -1,7 +1,7 @@
 package com.barlipdev.dwyf.controller;
 
-import com.barlipdev.dwyf.model.MatchedRecipe;
-import com.barlipdev.dwyf.model.Recipe;
+import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
+import com.barlipdev.dwyf.model.recipe.Recipe;
 import com.barlipdev.dwyf.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

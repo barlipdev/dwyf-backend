@@ -1,6 +1,7 @@
 package com.barlipdev.dwyf.controller;
 
-import com.barlipdev.dwyf.model.User;
+import com.barlipdev.dwyf.model.user.ShoppingList;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.product.Product;
 import com.barlipdev.dwyf.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,16 @@ public class UserController {
             product.setExpirationDate(date);
         }
         return userService.scanProductWithBarCode(product);
+    }
+
+    @PostMapping("/users/shoppingList")
+    public User createNewShoppingList(@RequestParam String userId, @RequestParam List<Product> productList){
+        return userService.createNewShoppingList(userId, productList);
+    }
+
+    @GetMapping("/users/shoppingList")
+    public List<ShoppingList> getShoppingLists(@RequestParam String userId){
+        return userService.getShoppingLists(userId);
     }
 
 }

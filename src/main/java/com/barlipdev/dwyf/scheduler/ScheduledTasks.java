@@ -1,6 +1,6 @@
 package com.barlipdev.dwyf.scheduler;
 
-import com.barlipdev.dwyf.model.User;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.product.UsefulnessState;
 import com.barlipdev.dwyf.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

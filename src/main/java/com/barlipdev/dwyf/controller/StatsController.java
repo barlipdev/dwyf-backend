@@ -1,6 +1,6 @@
 package com.barlipdev.dwyf.controller;
 
-import com.barlipdev.dwyf.model.User;
+import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.stats.RadarChartRecipes;
 import com.barlipdev.dwyf.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
