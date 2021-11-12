@@ -1,6 +1,8 @@
 package com.barlipdev.dwyf.service;
 
 import com.barlipdev.dwyf.exceptions.ResourceNotFoundException;
+import com.barlipdev.dwyf.model.product.ProductFilter;
+import com.barlipdev.dwyf.model.recipe.FoodTypeFilter;
 import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
 import com.barlipdev.dwyf.model.recipe.Recipe;
 import com.barlipdev.dwyf.model.user.User;
@@ -98,10 +100,18 @@ public class RecipeService {
         return recipeRepository.findAll();
     }
 
-    public MatchedRecipe getPrefferedRecipe(String userId){
-        List<Recipe> recipeList = recipeRepository.findAll();
-        List<Product> goodQualityUserProducts = userService.getGoodQualityUserProducts(userId);
-        List<Product> goodProducts = new ArrayList<Product>();
+    private List<Recipe> findRecipesByFoodType(FoodTypeFilter foodTypeFilter){
+        String foodType = foodTypeFilter.toString().toLowerCase();
+        String type = foodType.substring(0, 1).toUpperCase() + foodType.substring(1);
+
+        return recipeRepository.findAllByFoodType(type).orElseThrow();
+    }
+
+    public MatchedRecipe getPrefferedRecipe(String userId, ProductFilter productFilter, FoodTypeFilter foodTypeFilter){
+        List<Recipe> recipeList = findRecipesByFoodType(foodTypeFilter);
+        System.out.println(recipeList.size());
+        List<Product> goodQualityUserProducts = userService.getUserProducts(userId,productFilter);
+        List<Product> goodProducts = new ArrayList<>();
         List<MatchedRecipe> matchedRecipeList = new ArrayList<>();
         List<Product> availableProducts;
         List<Product> notAvailableProducts;
@@ -257,7 +267,7 @@ public class RecipeService {
             if (matchedRecipe.getNotAvailableProducts() == null || matchedRecipe.getNotAvailableProducts().size() == 0){
                 for (Product product : matchedRecipe.getAvailableProducts()){
                     for(Product userProduct : user.getProductList()){
-                        if (product.getName().equals(userProduct.getName()) && product.getExpirationDate() == userProduct.getExpirationDate()){
+                        if (product.getName().equals(userProduct.getName())){
                             userProduct.setCount(userProduct.getCount() - product.getCount());
                         }
                     }

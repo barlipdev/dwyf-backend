@@ -1,6 +1,7 @@
 package com.barlipdev.dwyf.service;
 
 import com.barlipdev.dwyf.mapper.Mapper;
+import com.barlipdev.dwyf.model.product.ProductFilter;
 import com.barlipdev.dwyf.model.user.ShoppingList;
 import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.product.Product;
@@ -71,25 +72,47 @@ public class UserService{
         }
     }
 
-    public List<Product> getGoodQualityUserProducts(String id){
+    public User deleteProduct(String userId,String productId){
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.getProductList().removeIf(product -> product.getId().equals(productId));
+
+        return  userRepository.save(user);
+    }
+
+    public User deleteExpiredProducts(String userId){
+        User user = userRepository.findById(userId).orElseThrow();
+
+        user.getProductList().removeIf(product -> product.getUsefulnessState() == UsefulnessState.EXPIRED);
+
+        return userRepository.save(user);
+    }
+
+    public List<Product> getUserProducts(String id, ProductFilter productFilter){
         User user = userRepository.findById(id).orElseThrow();
-        List<Product> goodProducts = new ArrayList<>();
-        LocalDate today = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        List<Product> products = new ArrayList<>();
 
-        //searching expired products
-        user.getProductList().forEach( userProduct -> {
-            if (userProduct.getUsefulnessState() == UsefulnessState.CLOSEEXPIRYDATE){
-                goodProducts.add(userProduct);
+        if (productFilter.equals(ProductFilter.ALL)){
+            products = user.getProductList();
+        }else if(productFilter.equals(ProductFilter.GOOD)){
+            products = getUserProductsByUsefulnessState(user.getProductList(),UsefulnessState.GOOD);
+        }else if(productFilter.equals(ProductFilter.CLOSEEXPIRED)){
+            products = getUserProductsByUsefulnessState(user.getProductList(),UsefulnessState.CLOSEEXPIRYDATE);
+        }
+
+        return products;
+    }
+
+    private List<Product> getUserProductsByUsefulnessState(List<Product> userProducts, UsefulnessState usefulnessState){
+        List<Product> products = new ArrayList<>();
+
+        for (Product product : userProducts){
+            if (product.getUsefulnessState() == usefulnessState){
+                products.add(product);
             }
-        });
+        }
 
-        user.getProductList().forEach(userProduct -> {
-            if (userProduct.getUsefulnessState() == UsefulnessState.GOOD){
-                goodProducts.add(userProduct);
-            }
-        });
-
-        return goodProducts;
+        return products;
     }
 
     public Product scanProductWithBarCode(Product product){
@@ -102,10 +125,19 @@ public class UserService{
         return userRepository.findByEmail(email).orElseThrow();
     }
 
-    public User createNewShoppingList(String id,List<Product> productList){
+    public User createNewShoppingList(String id,ShoppingList shoppingList){
         User user = userRepository.findById(id).orElseThrow();
-        List<ShoppingList> userShoppingList = user.getShoppingLists();
-        userShoppingList.add(new ShoppingList(productList));
+        List<ShoppingList> userShoppingList;
+
+        if (user.getShoppingLists() == null){
+            userShoppingList = new ArrayList<>();
+            user.setShoppingLists(userShoppingList);
+        }else {
+            userShoppingList = user.getShoppingLists();
+        }
+
+        shoppingList.setName("Lista zakupów z dnia: "+LocalDate.now());
+        userShoppingList.add(shoppingList);
         user.setShoppingLists(userShoppingList);
 
         return userRepository.save(user);
@@ -113,7 +145,16 @@ public class UserService{
 
     public List<ShoppingList> getShoppingLists(String id){
         User user = userRepository.findById(id).orElseThrow();
-        return  user.getShoppingLists();
+        List<ShoppingList> userShoppingList;
+
+        if (user.getShoppingLists() == null){
+            userShoppingList = new ArrayList<>();
+            return userShoppingList;
+        }else {
+            userShoppingList = user.getShoppingLists();
+        }
+
+        return  userShoppingList;
     }
 
 

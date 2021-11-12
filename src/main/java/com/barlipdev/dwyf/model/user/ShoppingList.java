@@ -8,17 +8,17 @@ import java.util.List;
 
 public class ShoppingList {
 
+    private String name;
     private List<Product> productList;
-    private LocalDate createdOn;
 
     public ShoppingList(){
         this.productList = new ArrayList<>();
-        this.createdOn = LocalDate.now();
+        this.name = "Lista zakupów z dnia: "+LocalDate.now();
     }
 
     public ShoppingList(List<Product> productList) {
         this.productList = productList;
-        this.createdOn = LocalDate.now();
+        this.name = "Lista zakupów z dnia: "+LocalDate.now();
     }
 
     public List<Product> getProductList() {
@@ -29,15 +29,16 @@ public class ShoppingList {
         this.productList = productList;
     }
 
-    public LocalDate getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(LocalDate createdOn) {
-        this.createdOn = createdOn;
-    }
 
     public int GetNumberOfProducts(){
         return productList.size();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

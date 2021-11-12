@@ -3,6 +3,7 @@ package com.barlipdev.dwyf.service;
 import com.barlipdev.dwyf.model.auth.LoginData;
 import com.barlipdev.dwyf.model.auth.LoginResponse;
 import com.barlipdev.dwyf.model.user.User;
+import com.barlipdev.dwyf.model.user.UserRole;
 import com.barlipdev.dwyf.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,7 +25,9 @@ public class AuthService {
     public User register(@RequestBody User newUser) throws IOException {
         newUser.setAvatarUrl("http://51.68.139.166/img/default.png");
         newUser.setProductList(new ArrayList<>());
+        newUser.setShoppingLists(new ArrayList<>());
         newUser.setCreatedIn(LocalDate.now());
+        newUser.setUserRole(UserRole.USER);
         return userRepository.insert(newUser);
     }
 

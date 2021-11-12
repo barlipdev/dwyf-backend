@@ -1,5 +1,7 @@
 package com.barlipdev.dwyf.controller;
 
+import com.barlipdev.dwyf.model.product.ProductFilter;
+import com.barlipdev.dwyf.model.recipe.FoodTypeFilter;
 import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
 import com.barlipdev.dwyf.model.recipe.Recipe;
 import com.barlipdev.dwyf.service.RecipeService;
@@ -37,8 +39,10 @@ public class RecipeController {
     }
 
     @GetMapping("/recipe/best")
-    public MatchedRecipe getPrefferedRecipe(@PathParam("userId") String userId){
-        return recipeService.getPrefferedRecipe(userId);
+    public MatchedRecipe getPrefferedRecipe(@RequestParam("userId") String userId,
+                                            @RequestParam("productFilter")ProductFilter productFilter,
+                                            @RequestParam("foodTypeFilter")FoodTypeFilter foodTypeFilter) {
+        return recipeService.getPrefferedRecipe(userId,productFilter,foodTypeFilter);
     }
 
     @DeleteMapping("/recipe")

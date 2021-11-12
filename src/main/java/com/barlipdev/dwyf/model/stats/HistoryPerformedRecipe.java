@@ -1,6 +1,7 @@
 package com.barlipdev.dwyf.model.stats;
 
 import com.barlipdev.dwyf.model.recipe.Recipe;
+import com.barlipdev.dwyf.model.recipe.RecipeStatus;
 import com.barlipdev.dwyf.model.user.User;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -20,14 +21,15 @@ public class HistoryPerformedRecipe {
     private Recipe recipe;
     @CreatedDate
     private LocalDate createdOn;
+    private RecipeStatus recipeStatus;
 
     public HistoryPerformedRecipe(){}
 
-    public HistoryPerformedRecipe(String id, User user, Recipe recipe) {
+    public HistoryPerformedRecipe(String id, User user, Recipe recipe, RecipeStatus recipeStatus) {
         this.id = id;
         this.user = user;
         this.recipe = recipe;
-        this.createdOn = createdOn;
+        this.recipeStatus = recipeStatus;
     }
 
     public String getId() {
@@ -60,5 +62,13 @@ public class HistoryPerformedRecipe {
 
     public void setCreatedOn(LocalDate createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public RecipeStatus getRecipeStatus() {
+        return recipeStatus;
+    }
+
+    public void setRecipeStatus(RecipeStatus recipeStatus) {
+        this.recipeStatus = recipeStatus;
     }
 }

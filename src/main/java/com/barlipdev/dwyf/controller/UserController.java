@@ -37,6 +37,16 @@ public class UserController {
         userService.delete(user);
     }
 
+    @DeleteMapping("/users/product")
+    public User deleteProduct(@RequestParam String userId, @RequestParam String productId){
+        return userService.deleteProduct(userId,productId);
+    }
+
+    @DeleteMapping("/users/product/all")
+    public User deleteExpiredProducts(@RequestParam String userId){
+        return userService.deleteExpiredProducts(userId);
+    }
+
     @GetMapping("/users/product")
     public List<Product> getUserProducts(@PathParam("userId") String userId){
         System.out.println(userId);
@@ -67,8 +77,8 @@ public class UserController {
     }
 
     @PostMapping("/users/shoppingList")
-    public User createNewShoppingList(@RequestParam String userId, @RequestParam List<Product> productList){
-        return userService.createNewShoppingList(userId, productList);
+    public User createNewShoppingList(@RequestParam String userId, @RequestBody ShoppingList shoppingList){
+        return userService.createNewShoppingList(userId, shoppingList);
     }
 
     @GetMapping("/users/shoppingList")
