@@ -27,6 +27,12 @@ public class UserController {
 
     }
 
+    @PostMapping("/users/product/manualy")
+    public User addProductManualy(@PathParam("userId") String userId, @RequestBody Product product){
+        return userService.addProductManualy(userId,product);
+
+    }
+
     @PostMapping("/users/update")
     public List<User> update(@RequestBody User user){
         return userService.update(user);
@@ -49,7 +55,6 @@ public class UserController {
 
     @GetMapping("/users/product")
     public List<Product> getUserProducts(@PathParam("userId") String userId){
-        System.out.println(userId);
         return userService.getUserProducts(userId);
     }
 
@@ -84,6 +89,11 @@ public class UserController {
     @GetMapping("/users/shoppingList")
     public List<ShoppingList> getShoppingLists(@RequestParam String userId){
         return userService.getShoppingLists(userId);
+    }
+
+    @PostMapping("/users/shoppingList/delete")
+    public User removeShoppingList(@RequestParam("userId") String userId, @RequestBody ShoppingList shoppingList){
+        return userService.removeShoppingList(userId, shoppingList);
     }
 
 }

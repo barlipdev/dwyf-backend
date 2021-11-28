@@ -5,6 +5,8 @@ import com.barlipdev.dwyf.model.product.ProductFilter;
 import com.barlipdev.dwyf.model.recipe.FoodTypeFilter;
 import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
 import com.barlipdev.dwyf.model.recipe.Recipe;
+import com.barlipdev.dwyf.model.recipe.RemovedProduct;
+import com.barlipdev.dwyf.model.stats.PerformingRecipe;
 import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.product.Product;
 import com.barlipdev.dwyf.model.product.ProductType;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class RecipeService {
@@ -27,7 +28,7 @@ public class RecipeService {
     private UserService userService;
 
     @Autowired
-    private HistoryPerformedRecipeService historyPerformedRecipeService;
+    private PerformingRecipeService performingRecipeService;
 
     public Recipe add(Recipe recipe){
         List<Product> recipeProducts;
@@ -109,14 +110,15 @@ public class RecipeService {
 
     public MatchedRecipe getPrefferedRecipe(String userId, ProductFilter productFilter, FoodTypeFilter foodTypeFilter){
         List<Recipe> recipeList = findRecipesByFoodType(foodTypeFilter);
-        System.out.println(recipeList.size());
         List<Product> goodQualityUserProducts = userService.getUserProducts(userId,productFilter);
         List<Product> goodProducts = new ArrayList<>();
         List<MatchedRecipe> matchedRecipeList = new ArrayList<>();
         List<Product> availableProducts;
         List<Product> notAvailableProducts;
         List<Product> usedRecipeProducts;
+        List<RemovedProduct> removedProducts;
         HashMap<Recipe,Integer> prefferedRecipes = new HashMap<>();
+        RemovedProduct removedProduct;
 
         //sorting products
         Collections.sort(goodQualityUserProducts);
@@ -124,23 +126,23 @@ public class RecipeService {
         //getting recipes where goodQualityUserProducts exists
         for (Recipe recipe : recipeList){
             List<Product> recipeProducts = recipe.getProductList();
-            AtomicInteger correctProductsCount = new AtomicInteger();
+            int correctProductsCount = 0;
             availableProducts = new ArrayList<>();
             notAvailableProducts = new ArrayList<>();
             usedRecipeProducts = new ArrayList<>();
-            correctProductsCount.set(0);
+            removedProducts = new ArrayList<>();
 
             for (Product recipeProduct : recipeProducts){
                 HashMap<Product,Integer> prefferedProduct = new HashMap<>();
                 for (Product goodQualityProduct : goodQualityUserProducts){
                     int productPoints = checkTags(recipeProduct,goodQualityProduct);
                     if (productPoints > 0){
-                        if (goodQualityProduct.getCount() > recipeProduct.getCount()){
-                            goodQualityProduct.setCount(recipeProduct.getCount());
-                            goodQualityProduct.setProductType(recipeProduct.getProductType());
+                        if (goodQualityProduct.getCount() >= recipeProduct.getCount()){
                             prefferedProduct.put(goodQualityProduct,productPoints);
                             if (!availableProducts.contains(goodQualityProduct)){
                                 availableProducts.add(goodQualityProduct);
+                                removedProduct = new RemovedProduct(goodQualityProduct.getName(),recipeProduct.getCount());
+                                removedProducts.add(removedProduct);
                                 if (!usedRecipeProducts.contains(recipeProduct)){
                                     usedRecipeProducts.add(recipeProduct);
                                 }
@@ -151,7 +153,7 @@ public class RecipeService {
                 if (prefferedProduct.size() > 0){
                     Product finalProduct = getProductFromMap(prefferedProduct);
                     if(!goodProducts.contains(finalProduct)){
-                        correctProductsCount.set(correctProductsCount.intValue() + 1);
+                        correctProductsCount = correctProductsCount + 1;
                         goodProducts.add(getProductFromMap(prefferedProduct));
                     }
                 }
@@ -163,18 +165,17 @@ public class RecipeService {
                 }
             }
 
+            if (notAvailableProducts.isEmpty()){
+                return new MatchedRecipe(recipe,availableProducts,notAvailableProducts,removedProducts);
+            }
 
-            if (correctProductsCount.get() > 0){
-                prefferedRecipes.put(recipe,correctProductsCount.get());
-                System.out.println("Recipe points: " + recipe.getName() +" Points: "+ correctProductsCount.intValue() + "-----------V" );
-                goodProducts.forEach(goodProduct -> {
-                    System.out.println(goodProduct.getName());
-                });
+            if (correctProductsCount > 0){
+                prefferedRecipes.put(recipe,correctProductsCount);
                 goodProducts.clear();
-                correctProductsCount.set(0);
-                MatchedRecipe matchedRecipe = new MatchedRecipe(recipe,availableProducts,notAvailableProducts);
+                MatchedRecipe matchedRecipe = new MatchedRecipe(recipe,availableProducts,notAvailableProducts,removedProducts);
                 matchedRecipeList.add(matchedRecipe);
             }
+
         }
         Recipe recipe = getRecipeFromMap(prefferedRecipes);
        MatchedRecipe finalMatchedRecipe = new MatchedRecipe();
@@ -242,45 +243,28 @@ public class RecipeService {
     private Integer checkTags(Product recipeProduct, Product product){
         List<String> recipeProductTags = recipeProduct.getSplittedProductTags();
         List<String> productTags = product.getSplittedProductTags();
-        AtomicReference<Integer> response = new AtomicReference<Integer>(0);
+        int response = 0;
 
-        recipeProductTags.forEach(recipeProductTag -> {
-            productTags.forEach(productTag -> {
-                if (recipeProductTag.contains(productTag)){
+        for (String recipeProductTag : recipeProductTags){
+            for (String productTag : productTags){
+
+                if (recipeProductTag.toLowerCase().contains(productTag.toLowerCase())){
                     String tmp = recipeProductTag.replaceAll("\\s+","");
                     if (productTag.length() == tmp.length()){
-                        response.set(response.get() +1);
+                        System.out.println("Spared: "+ recipeProductTag + " WITH " + productTag);
+                        response = response + 1;
                     }
-                }
-            });
-        });
 
-        return response.get();
+                }
+            }
+            System.out.println("-----------------------------");
+        }
+        return response;
 
     }
 
-    private boolean performRecipe(String userId, MatchedRecipe matchedRecipe){
-
-        User user = userService.findById(userId);
-
-        if(user != null){
-            if (matchedRecipe.getNotAvailableProducts() == null || matchedRecipe.getNotAvailableProducts().size() == 0){
-                for (Product product : matchedRecipe.getAvailableProducts()){
-                    for(Product userProduct : user.getProductList()){
-                        if (product.getName().equals(userProduct.getName())){
-                            userProduct.setCount(userProduct.getCount() - product.getCount());
-                        }
-                    }
-                }
-                userService.update(user);
-                historyPerformedRecipeService.addPerformedRecipe(user,matchedRecipe.getRecipe());
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
+    public PerformingRecipe addPerform(String userId, MatchedRecipe matchedRecipe){
+            return performingRecipeService.addPerformedRecipe(userId, matchedRecipe);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.barlipdev.dwyf.model.stats;
 
+import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
 import com.barlipdev.dwyf.model.recipe.Recipe;
 import com.barlipdev.dwyf.model.recipe.RecipeStatus;
 import com.barlipdev.dwyf.model.user.User;
@@ -10,26 +11,26 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
-@Document("HistoryPerformedRecipe")
-public class HistoryPerformedRecipe {
+@Document("Performing Recipe")
+public class PerformingRecipe {
 
     @Id
     private String id;
-    @DBRef
-    private User user;
-    @DBRef
-    private Recipe recipe;
-    @CreatedDate
+    private String userId;
+    private MatchedRecipe matchedRecipe;
     private LocalDate createdOn;
     private RecipeStatus recipeStatus;
 
-    public HistoryPerformedRecipe(){}
+    public PerformingRecipe(){
+        this.createdOn = LocalDate.now();
+        this.recipeStatus = RecipeStatus.IN_PROGRESS;
+    }
 
-    public HistoryPerformedRecipe(String id, User user, Recipe recipe, RecipeStatus recipeStatus) {
-        this.id = id;
-        this.user = user;
-        this.recipe = recipe;
-        this.recipeStatus = recipeStatus;
+    public PerformingRecipe(String userId, MatchedRecipe matchedRecipe) {
+        this.userId = userId;
+        this.matchedRecipe = matchedRecipe;
+        this.recipeStatus = RecipeStatus.IN_PROGRESS;
+        this.createdOn = LocalDate.now();
     }
 
     public String getId() {
@@ -40,20 +41,20 @@ public class HistoryPerformedRecipe {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public Recipe getRecipe() {
-        return recipe;
+    public MatchedRecipe getMatchedRecipe() {
+        return matchedRecipe;
     }
 
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
+    public void setMatchedRecipe(MatchedRecipe matchedRecipe) {
+        this.matchedRecipe = matchedRecipe;
     }
 
     public LocalDate getCreatedOn() {

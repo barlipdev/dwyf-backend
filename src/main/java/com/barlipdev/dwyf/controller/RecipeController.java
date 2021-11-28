@@ -4,11 +4,11 @@ import com.barlipdev.dwyf.model.product.ProductFilter;
 import com.barlipdev.dwyf.model.recipe.FoodTypeFilter;
 import com.barlipdev.dwyf.model.recipe.MatchedRecipe;
 import com.barlipdev.dwyf.model.recipe.Recipe;
+import com.barlipdev.dwyf.model.stats.PerformingRecipe;
 import com.barlipdev.dwyf.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 
@@ -43,6 +43,11 @@ public class RecipeController {
                                             @RequestParam("productFilter")ProductFilter productFilter,
                                             @RequestParam("foodTypeFilter")FoodTypeFilter foodTypeFilter) {
         return recipeService.getPrefferedRecipe(userId,productFilter,foodTypeFilter);
+    }
+
+    @PostMapping("/recipe/best/addPerform")
+    public PerformingRecipe addPerform(@RequestParam("userId") String userId, @RequestBody MatchedRecipe matchedRecipe){
+        return recipeService.addPerform(userId,matchedRecipe);
     }
 
     @DeleteMapping("/recipe")

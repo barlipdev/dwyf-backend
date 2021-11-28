@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserService{
@@ -70,6 +68,34 @@ public class UserService{
         }else{
             return null;
         }
+    }
+
+    public User addProductManualy(String id, Product product){
+        User user = userRepository.findById(id).orElseThrow();
+        if (user.getProductList() == null){
+            user.setProductList(new ArrayList<>());
+        }
+        product.setSplittedProductTags(splitProductTag(product.getName()));
+        if (product.getExpirationDate().isAfter(LocalDate.now())){
+            product.setUsefulnessState(UsefulnessState.GOOD);
+        }
+        if (product.getId() == null){
+            UUID uuid = UUID.randomUUID();
+            product.setId(uuid.toString());
+        }
+
+        user.getProductList().add(product);
+
+        return userRepository.save(user);
+    }
+
+    private List<String> splitProductTag(String productTag){
+        List<String> splittedTags = new ArrayList<>();
+        String[] temp = productTag.split(" ");
+        for (String tag : temp){
+            splittedTags.add(tag);
+        }
+        return splittedTags;
     }
 
     public User deleteProduct(String userId,String productId){
@@ -128,6 +154,7 @@ public class UserService{
     public User createNewShoppingList(String id,ShoppingList shoppingList){
         User user = userRepository.findById(id).orElseThrow();
         List<ShoppingList> userShoppingList;
+        UUID uuid = UUID.randomUUID();
 
         if (user.getShoppingLists() == null){
             userShoppingList = new ArrayList<>();
@@ -137,6 +164,7 @@ public class UserService{
         }
 
         shoppingList.setName("Lista zakupów z dnia: "+LocalDate.now());
+        shoppingList.setId(uuid.toString());
         userShoppingList.add(shoppingList);
         user.setShoppingLists(userShoppingList);
 
@@ -157,5 +185,15 @@ public class UserService{
         return  userShoppingList;
     }
 
+    public User removeShoppingList(String userId, ShoppingList shoppingList){
+        User user = userRepository.findById(userId).orElseThrow();
+        List<ShoppingList> shoppingLists = user.getShoppingLists();
+
+        shoppingLists.removeIf(list -> Objects.equals(list.getId(), shoppingList.getId()));
+        user.setShoppingLists(shoppingLists);
+
+        return userRepository.save(user);
+
+    }
 
 }
