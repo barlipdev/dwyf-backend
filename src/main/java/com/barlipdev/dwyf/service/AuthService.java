@@ -43,7 +43,7 @@ public class AuthService {
                     .claim("password",loginData.getPassword())
                     .claim("userRole",findedUser.getUserRole())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis()+ 86400000))
+                    .setExpiration(new Date(System.currentTimeMillis()+ 999999999))
                     .signWith(SignatureAlgorithm.HS512,"7aPc$VED<-Qr8)E".getBytes())
                     .compact();
         }

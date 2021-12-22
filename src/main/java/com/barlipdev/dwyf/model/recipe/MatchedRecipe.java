@@ -2,10 +2,12 @@ package com.barlipdev.dwyf.model.recipe;
 
 import com.barlipdev.dwyf.model.recipe.Recipe;
 import com.barlipdev.dwyf.model.product.Product;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class MatchedRecipe {
 

@@ -10,6 +10,7 @@ import com.barlipdev.dwyf.model.product.UsefulnessState;
 import com.barlipdev.dwyf.repository.OpenFoodProductRepository;
 import com.barlipdev.dwyf.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -53,7 +54,18 @@ public class UserService{
     }
 
     public List<Product> getUserProducts(String id){
-        return userRepository.findById(id).orElseThrow().getProductList();
+        List<Product> userProducts = userRepository.findById(id).orElseThrow().getProductList();
+
+        if (!userProducts.isEmpty()){
+            Collections.sort(userProducts, new Comparator<Product>() {
+                @Override
+                public int compare(Product p1, Product p2) {
+                    return p1.getName().compareTo(p2.getName());
+                }
+            });
+        }
+
+        return userProducts;
     }
 
     public Product addProduct(String id, Product product){

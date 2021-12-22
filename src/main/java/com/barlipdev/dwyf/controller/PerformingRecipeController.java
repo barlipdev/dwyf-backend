@@ -29,8 +29,8 @@ public class PerformingRecipeController {
     }
 
     @PostMapping("/performing/perform")
-    public void performRecipe(@RequestParam("userId") String userId, @RequestBody PerformingRecipe performingRecipe){
-        performingRecipeService.performRecipe(userId, performingRecipe);
+    public PerformingRecipe performRecipe(@RequestParam("userId") String userId, @RequestBody PerformingRecipe performingRecipe){
+        return performingRecipeService.performRecipe(userId, performingRecipe);
     }
 
 }

@@ -108,7 +108,8 @@ public class RecipeService {
         return recipeRepository.findAllByFoodType(type).orElseThrow();
     }
 
-    public MatchedRecipe getPrefferedRecipe(String userId, ProductFilter productFilter, FoodTypeFilter foodTypeFilter){
+    public List<MatchedRecipe> getPrefferedRecipe(String userId, ProductFilter productFilter, FoodTypeFilter foodTypeFilter){
+
         List<Recipe> recipeList = findRecipesByFoodType(foodTypeFilter);
         List<Product> goodQualityUserProducts = userService.getUserProducts(userId,productFilter);
         List<Product> goodProducts = new ArrayList<>();
@@ -147,6 +148,7 @@ public class RecipeService {
                                     usedRecipeProducts.add(recipeProduct);
                                 }
                             }
+                            break;
                         }
                     }
                 }
@@ -159,14 +161,43 @@ public class RecipeService {
                 }
             }
 
+            if (productFilter.equals(ProductFilter.CLOSEEXPIRED)  && correctProductsCount > 0){
+                List<Product> additionalProducts = userService.getUserProducts(userId,ProductFilter.GOOD);
+
+                for (Product recipeProduct : recipeProducts){
+                    HashMap<Product,Integer> prefferedProduct = new HashMap<>();
+                    for (Product additional : additionalProducts){
+                        int productPoints = checkTags(recipeProduct,additional);
+                        if (productPoints > 0 && !usedRecipeProducts.contains(recipeProduct)){
+                            if (additional.getCount() >= recipeProduct.getCount()){
+                                prefferedProduct.put(additional,productPoints);
+                                if (!availableProducts.contains(additional)){
+                                    availableProducts.add(additional);
+                                    removedProduct = new RemovedProduct(additional.getName(),recipeProduct.getCount());
+                                    removedProducts.add(removedProduct);
+                                    if (!usedRecipeProducts.contains(recipeProduct)){
+                                        usedRecipeProducts.add(recipeProduct);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    if (prefferedProduct.size() > 0){
+                        Product finalProduct = getProductFromMap(prefferedProduct);
+                        if(!goodProducts.contains(finalProduct)){
+                            correctProductsCount = correctProductsCount + 1;
+                            goodProducts.add(getProductFromMap(prefferedProduct));
+                        }
+                    }
+                }
+
+            }
+
             for (Product recipeProduct : recipeProducts){
                 if (!usedRecipeProducts.contains(recipeProduct)){
                     notAvailableProducts.add(recipeProduct);
                 }
-            }
-
-            if (notAvailableProducts.isEmpty()){
-                return new MatchedRecipe(recipe,availableProducts,notAvailableProducts,removedProducts);
             }
 
             if (correctProductsCount > 0){
@@ -177,29 +208,48 @@ public class RecipeService {
             }
 
         }
-        Recipe recipe = getRecipeFromMap(prefferedRecipes);
-       MatchedRecipe finalMatchedRecipe = new MatchedRecipe();
-        for(MatchedRecipe matchedRecipe : matchedRecipeList){
-            if (matchedRecipe.getRecipe().getId().equals(recipe.getId())){
-                finalMatchedRecipe = matchedRecipe;
+        List<MatchedRecipe> finalRecipes = new ArrayList<>();
+        List<Recipe> sortedRecipes = getRecipesFromMap(prefferedRecipes);
+        for (Recipe recipe : sortedRecipes){
+            for(MatchedRecipe matchedRecipe : matchedRecipeList){
+                if (matchedRecipe.getRecipe().getId().equals(recipe.getId())){
+                    finalRecipes.add(matchedRecipe);
+                }
             }
         }
 
-        return finalMatchedRecipe;
+
+        return finalRecipes;
     }
 
 
-    private Recipe getRecipeFromMap(HashMap<Recipe,Integer> recipesMap){
-        int max = Collections.max(recipesMap.values());
+    private List<Recipe> getRecipesFromMap(HashMap<Recipe,Integer> recipesMap){
+        HashMap<Recipe,Integer> sortedRecipeMap = sortByValue(recipesMap);
+        List<Recipe> recipeList = new ArrayList<>();
 
-        for(Map.Entry<Recipe, Integer> entry : recipesMap.entrySet()) {
-            if (entry.getValue() == max){
-                return entry.getKey();
+        recipeList.addAll(sortedRecipeMap.keySet());
+        return recipeList;
+    }
+
+    private HashMap<Recipe, Integer> sortByValue(HashMap<Recipe, Integer> hm)
+    {
+        List<Map.Entry<Recipe, Integer> > list =
+                new LinkedList<Map.Entry<Recipe, Integer> >(hm.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<Recipe, Integer> >() {
+            public int compare(Map.Entry<Recipe, Integer> o1,
+                               Map.Entry<Recipe, Integer> o2)
+            {
+                return (o2.getValue()).compareTo(o1.getValue());
             }
-        }
-        return null;
-    }
+        });
 
+        HashMap<Recipe, Integer> temp = new LinkedHashMap<Recipe, Integer>();
+        for (Map.Entry<Recipe, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
 
 
     private Product getProductFromMap(HashMap<Product,Integer> productMap){
@@ -251,13 +301,11 @@ public class RecipeService {
                 if (recipeProductTag.toLowerCase().contains(productTag.toLowerCase())){
                     String tmp = recipeProductTag.replaceAll("\\s+","");
                     if (productTag.length() == tmp.length()){
-                        System.out.println("Spared: "+ recipeProductTag + " WITH " + productTag);
                         response = response + 1;
                     }
 
                 }
             }
-            System.out.println("-----------------------------");
         }
         return response;
 

@@ -27,8 +27,8 @@ public class UserController {
 
     }
 
-    @PostMapping("/users/product/manualy")
-    public User addProductManualy(@PathParam("userId") String userId, @RequestBody Product product){
+    @PostMapping("/users/product/manually")
+    public User addProductManually(@RequestParam("userId") String userId, @RequestBody Product product){
         return userService.addProductManualy(userId,product);
 
     }
@@ -74,10 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/users/product/barcode")
-    public Product addProductByBarCode(@RequestBody Product product,@RequestParam String date){
-        if(date != null){
-            product.setExpirationDate(date);
-        }
+    public Product addProductByBarCode(@RequestBody Product product){
         return userService.scanProductWithBarCode(product);
     }
 

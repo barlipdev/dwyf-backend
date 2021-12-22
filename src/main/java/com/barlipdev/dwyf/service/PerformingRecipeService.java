@@ -9,6 +9,7 @@ import com.barlipdev.dwyf.model.user.User;
 import com.barlipdev.dwyf.model.stats.PerformingRecipe;
 import com.barlipdev.dwyf.repository.PerformingRecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,7 +32,7 @@ public class PerformingRecipeService {
     }
 
     public List<PerformingRecipe> findAllByUserId(String userId){
-        return performingRecipeRepository.findAllByUserId(userId).orElseThrow();
+        return performingRecipeRepository.findAllByUserId(userId, Sort.by(Sort.Direction.DESC,"createdOn")).orElseThrow();
     }
 
     public PerformingRecipe updatePerformingRecipe(PerformingRecipe performingRecipe){
@@ -43,7 +44,7 @@ public class PerformingRecipeService {
         performingRecipeRepository.delete(performingRecipe);
     }
 
-    public void performRecipe(String userId, PerformingRecipe performingRecipe){
+    public PerformingRecipe performRecipe(String userId, PerformingRecipe performingRecipe){
         User user = userService.findById(userId);
 
         for (RemovedProduct removedProduct : performingRecipe.getMatchedRecipe().getRemovedProducts()) {
@@ -54,8 +55,9 @@ public class PerformingRecipeService {
             }
         }
         performingRecipe.setRecipeStatus(RecipeStatus.DONE);
-        performingRecipeRepository.save(performingRecipe);
         userService.update(user);
+
+        return performingRecipeRepository.save(performingRecipe);
     }
 
     public double roundCount(double value) {

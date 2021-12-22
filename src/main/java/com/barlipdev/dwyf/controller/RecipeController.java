@@ -39,7 +39,7 @@ public class RecipeController {
     }
 
     @GetMapping("/recipe/best")
-    public MatchedRecipe getPrefferedRecipe(@RequestParam("userId") String userId,
+    public List<MatchedRecipe> getPrefferedRecipe(@RequestParam("userId") String userId,
                                             @RequestParam("productFilter")ProductFilter productFilter,
                                             @RequestParam("foodTypeFilter")FoodTypeFilter foodTypeFilter) {
         return recipeService.getPrefferedRecipe(userId,productFilter,foodTypeFilter);
